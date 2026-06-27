@@ -10,14 +10,6 @@ const els = {
   resultPage: $("#resultPage"),
   scoreForm: $("#scoreForm"),
   aliasInput: $("#aliasInput"),
-  provinceSelect: $("#provinceSelect"),
-  trackSelect: $("#trackSelect"),
-  ritualSelect: $("#ritualSelect"),
-  workSelect: $("#workSelect"),
-  restartSelect: $("#restartSelect"),
-  familySelect: $("#familySelect"),
-  personalitySelect: $("#personalitySelect"),
-  talentSelect: $("#talentSelect"),
   scoreReport: $("#scoreReport"),
   scoreHeadline: $("#scoreHeadline"),
   scoreExplain: $("#scoreExplain"),
@@ -29,10 +21,12 @@ const els = {
   candidateName: $("#candidateName"),
   candidateProvince: $("#candidateProvince"),
   candidateTrack: $("#candidateTrack"),
-  candidateWork: $("#candidateWork"),
-  candidateRestart: $("#candidateRestart"),
+  candidateCity: $("#candidateCity"),
   candidateFamily: $("#candidateFamily"),
   candidatePersonality: $("#candidatePersonality"),
+  candidateHobby: $("#candidateHobby"),
+  candidateStrength: $("#candidateStrength"),
+  candidateLike: $("#candidateLike"),
   candidateTalent: $("#candidateTalent"),
   candidateScore: $("#candidateScore"),
   candidateRank: $("#candidateRank"),
@@ -94,13 +88,32 @@ const rituals = {
   f5: { name: "F5 连点，服务器求饶", score: -10, feed: "服务器没有崩，但你的心态先排队了。" }
 };
 
-const currentWorks = {
-  overtime: { name: "互联网加班中", score: 2, copy: "现世已经会写周报，重开后看招生章程像看 PRD。", twist: "从需求评审桌边穿越回考场，第一反应是问有没有截止时间。" },
-  office: { name: "办公室材料人", score: 5, copy: "材料写多了，志愿表也能排出公文格式。", twist: "把 A-F 志愿填出了红头文件的庄严感，人生突然像进入审批流。" },
-  finance: { name: "金融/咨询做表中", score: 4, copy: "会用 Excel 算命，看到位次先做敏感性分析。", twist: "查分时脑内自动生成三页 PPT：机会、风险、下一步。" },
-  sales: { name: "销售/运营跑动中", score: -2, copy: "擅长临场发挥，也擅长把滑档讲成增长空间。", twist: "把每所大学都当客户拜访，连调剂都能聊出合作意向。" },
-  freelance: { name: "自由职业试炼中", score: -4, copy: "不怕路径非标，只怕余额非标。", twist: "重新高考的意义是：至少录取通知书比甲方回款准时。" },
-  teacher: { name: "上岸后讲题中", score: 8, copy: "终于知道老师当年为什么能预判所有低级错误。", twist: "一边查分一边想讲评，最后发现被讲评的是自己的人生。" }
+const homeCities = {
+  henan: {
+    henan_county: { name: "河南县城", score: 8, stable: 4, ambition: 8, copy: "县城消息传播速度比录取系统还快，亲戚已经开始预排酒席。" },
+    zhengzhou_suburb: { name: "郑州近郊", score: 2, stable: 2, ambition: 4, copy: "城市不算陌生，志愿表里每个省会都像能去闯一闯。" },
+    luoyang_oldcity: { name: "洛阳老城区", score: 3, stable: 5, ambition: 2, copy: "从小被历史包围，填志愿时也会把学校底蕴看得很重。" }
+  },
+  guangdong: {
+    guangzhou_oldtown: { name: "广州老城区", score: 2, stable: 1, ambition: 6, copy: "大城市 buff 已经开过，看到一线城市不会自动紧张。" },
+    shenzhen_migrant: { name: "深圳打工人家庭社区", score: 4, stable: -2, ambition: 12, copy: "从小知道机会很贵，也知道人生可以靠速度改写。" },
+    chaoshan_town: { name: "潮汕小镇", score: 3, stable: 6, ambition: 4, copy: "家族群很热闹，专业最好听起来能吃饭。" }
+  },
+  jiangsu: {
+    suzhou_school: { name: "苏州教育强区", score: 7, stable: 4, ambition: 6, copy: "从小卷得比较精致，连放松都像排过课表。" },
+    nanjing_commuter: { name: "南京通勤圈", score: 4, stable: 5, ambition: 3, copy: "城市资源近在眼前，学校名气和生活质量都要权衡。" },
+    xuzhou_county: { name: "苏北县城", score: 5, stable: 6, ambition: 4, copy: "务实底色很强，志愿表不追玄学，追能落地。" }
+  },
+  sichuan: {
+    chengdu_ring: { name: "成都三环边", score: 1, stable: 2, ambition: 4, copy: "巴适是一种诱惑，自律是一门必修课。" },
+    mianyang_school: { name: "绵阳做题氛围组", score: 8, stable: 3, ambition: 7, copy: "题海见过大风浪，查分时反而有一种训练有素的平静。" },
+    county_basin: { name: "川东北县城", score: 3, stable: 6, ambition: 3, copy: "离家远近会被认真讨论，但人生总要去看更大的地图。" }
+  },
+  beijing: {
+    haidian: { name: "北京海淀", score: 10, stable: -2, ambition: 10, copy: "从小见过太多强者，心态不是很稳，但眼界确实很高。" },
+    tongzhou: { name: "北京通州", score: 3, stable: 3, ambition: 4, copy: "城市很大，通勤很长，理想也被拉出了半径。" },
+    changping: { name: "北京昌平", score: 4, stable: 2, ambition: 5, copy: "高校和科技园都不远，人生路线天然带一点研发气。" }
+  }
 };
 
 const restarts = {
@@ -155,6 +168,33 @@ const talents = {
   art: { name: "审美在线/会做海报", score: 0, majors: ["新闻传播学类", "数字媒体技术", "建筑类", "工商管理类"], career: "品牌设计/产品运营", copy: "志愿表也要对齐，录取通知书必须拍九宫格。" },
   sports: { name: "体育生心态/抗压强", score: -1, majors: ["临床医学", "师范类", "工商管理类", "公共管理类"], career: "项目经理", copy: "被调剂也能先热身，主打一个不破防。" },
   none: { name: "暂无明显特长但很会熬夜", score: -3, majors: ["工商管理类", "公共管理类", "材料类", "环境科学与工程类"], career: "综合型打工人", copy: "特长不明显，但续航惊人，适合所有需要扛事的岗位。" }
+};
+
+const hobbies = {
+  games: { name: "打游戏研究机制", score: -2, majors: ["计算机类", "数字媒体技术", "人工智能"], copy: "爱好看起来像摸鱼，实际已经开始理解系统、反馈和数值。" },
+  reading: { name: "看书和写小作文", score: 4, majors: ["汉语言文学", "新闻传播学类", "法学", "师范类"], copy: "精神世界很丰富，填志愿时会被专业介绍里的每个词影响。" },
+  tinkering: { name: "拆东西和装东西", score: 3, majors: ["机械类", "电子信息类", "智能制造工程技术", "工科试验班"], copy: "动手能力很强，人生遇到问题第一反应是先拆开看看。" },
+  photography: { name: "拍照剪视频", score: 1, majors: ["新闻传播学类", "数字媒体技术", "设计学类", "电子商务"], copy: "任何校园都能被拍出宣传片质感，前提是别被早八打败。" },
+  sports: { name: "运动和校队氛围", score: 0, majors: ["师范类", "临床医学", "工商管理类", "公共管理类"], copy: "抗压靠身体记忆，调剂来了也能先热身再处理。" },
+  finance: { name: "记账和研究赚钱", score: 2, majors: ["金融学类", "会计学", "经济学类", "工商管理类"], copy: "从小对价格敏感，连大学生活都想算投入产出比。" }
+};
+
+const strengths = {
+  logic: { name: "逻辑推理", score: 8, fit: 8, majors: ["数学类", "计算机类", "人工智能", "法学"], copy: "擅长把混乱问题拆成步骤，志愿表在你手里像流程图。" },
+  memory: { name: "背诵记忆", score: 6, fit: 6, majors: ["临床医学", "法学", "汉语言文学", "师范类"], copy: "记忆力像缓存，知识点进来以后不太容易掉。" },
+  expression: { name: "表达和说服", score: 3, fit: 8, majors: ["新闻传播学类", "法学", "工商管理类", "外国语言文学类"], copy: "能把复杂问题讲成人话，也能把普通经历讲出节目效果。" },
+  execution: { name: "执行力", score: 4, fit: 6, majors: ["工科试验班", "自动化类", "机械类", "工商管理类"], copy: "不一定最会幻想，但很会把事情推进到下一步。" },
+  empathy: { name: "共情和照顾人", score: 2, fit: 8, majors: ["师范类", "护理学", "心理学类", "公共管理类"], copy: "容易把别人放在心上，也容易在群聊里变成默认负责人。" },
+  endurance: { name: "长期熬住", score: 5, fit: 5, majors: ["材料类", "环境科学与工程类", "临床医学", "工程造价"], copy: "天赋不一定惊艳，但续航惊人，适合打长期副本。" }
+};
+
+const likes = {
+  bigcity: { name: "大城市和机会", score: 1, stable: -4, ambition: 10, parent: 8, majors: ["计算机类", "金融学类", "新闻传播学类", "工商管理类"], copy: "喜欢人多、机会多、选择多，也接受焦虑多一点。" },
+  stable: { name: "稳定和确定性", score: 3, stable: 12, ambition: -6, parent: -8, majors: ["师范类", "临床医学", "法学", "公共管理类"], copy: "喜欢能解释清楚的未来，最好每一步都有章程可查。" },
+  money: { name: "赚钱和现实回报", score: 2, stable: 0, ambition: 8, parent: 4, majors: ["金融学类", "计算机类", "会计学", "电子商务"], copy: "理想可以谈，但回报也要看，人生不想只靠情怀供电。" },
+  freedom: { name: "自由和不被管", score: -2, stable: -6, ambition: 6, parent: 10, majors: ["设计学类", "数字媒体技术", "新闻传播学类", "旅游管理类"], copy: "喜欢空间感，最怕被一句“都行”困进不喜欢的路。" },
+  hometown: { name: "离家近和熟人社会", score: 2, stable: 10, ambition: -2, parent: -10, majors: ["师范类", "临床医学", "工商管理类", "会计学"], copy: "喜欢熟悉的饭菜和方言，学校离家近会自动加分。" },
+  faraway: { name: "去远方重新开局", score: 0, stable: -2, ambition: 8, parent: 6, majors: ["外国语言文学类", "交通运输类", "生态学类", "新闻传播学类"], copy: "喜欢地图上没去过的地方，录取通知书像一张通往新身份的车票。" }
 };
 
 const majorFactors = {
@@ -478,10 +518,13 @@ function initialState() {
       province: "henan",
       track: "physics",
       ritual: "steady",
-      work: "overtime",
       restart: "blindbox",
+      homeCity: "henan_county",
       family: "ordinary",
       personality: "steady",
+      hobby: "games",
+      strength: "logic",
+      like: "bigcity",
       talent: "coding",
       score: null,
       rank: null,
@@ -501,6 +544,37 @@ function clamp(value, min, max) {
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomKey(collection) {
+  const keys = Object.keys(collection);
+  return keys[randomInt(0, keys.length - 1)];
+}
+
+function randomCityKey(provinceKey) {
+  return randomKey(homeCities[provinceKey] || homeCities.henan);
+}
+
+function homeCityProfile(cityKey) {
+  for (const group of Object.values(homeCities)) {
+    if (group[cityKey]) return group[cityKey];
+  }
+  return homeCities.henan.henan_county;
+}
+
+function rollCandidateProfile() {
+  const c = state.candidate;
+  c.province = randomKey(provinces);
+  c.track = randomKey(tracks);
+  c.ritual = randomKey(rituals);
+  c.restart = randomKey(restarts);
+  c.homeCity = randomCityKey(c.province);
+  c.family = randomKey(families);
+  c.personality = randomKey(personalities);
+  c.hobby = randomKey(hobbies);
+  c.strength = randomKey(strengths);
+  c.like = randomKey(likes);
+  c.talent = randomKey(talents);
 }
 
 function sanitize(text) {
@@ -538,14 +612,17 @@ function generateTotalScore() {
   const province = provinces[c.province];
   const track = tracks[c.track];
   const ritual = rituals[c.ritual];
-  const work = currentWorks[c.work];
   const restart = restarts[c.restart];
+  const city = homeCityProfile(c.homeCity);
   const family = families[c.family];
   const personality = personalities[c.personality];
   const talent = talents[c.talent];
+  const hobby = hobbies[c.hobby];
+  const strength = strengths[c.strength];
+  const like = likes[c.like];
   const [min, max] = weightedBand(restart.bands);
   const raw = randomInt(min, max);
-  const modifier = track.scoreBias + ritual.score + work.score + family.score + personality.score + talent.score - Math.round(province.pressure * .7);
+  const modifier = track.scoreBias + ritual.score + city.score + family.score + personality.score + talent.score + hobby.score + strength.score + like.score - Math.round(province.pressure * .7);
   return clamp(Math.round(raw + modifier + randomInt(-12, 12)), 150, 748);
 }
 
@@ -572,9 +649,9 @@ function normalizeSubjects(values, total) {
 function generateSubjects(total) {
   const c = state.candidate;
   const ratio = total / 750;
-  const chinese = 150 * ratio + (c.track === "history" ? 8 : 0) + randomInt(-12, 12);
-  const math = 150 * ratio + (c.track === "physics" ? 10 : -4) + (c.talent === "math" ? 10 : 0) + randomInt(-18, 18);
-  const english = 150 * ratio + (c.talent === "writing" ? 6 : 0) + randomInt(-14, 14);
+  const chinese = 150 * ratio + (c.track === "history" ? 8 : 0) + (c.hobby === "reading" ? 8 : 0) + randomInt(-12, 12);
+  const math = 150 * ratio + (c.track === "physics" ? 10 : -4) + (c.talent === "math" ? 10 : 0) + (c.strength === "logic" ? 6 : 0) + randomInt(-18, 18);
+  const english = 150 * ratio + (c.talent === "writing" ? 6 : 0) + (c.like === "faraway" ? 5 : 0) + randomInt(-14, 14);
   const rest = 300 * ratio + (c.track === "physics" ? 8 : 0) + randomInt(-24, 24);
   return normalizeSubjects([chinese, math, english, rest], total);
 }
@@ -624,21 +701,17 @@ function generateScore(event) {
   event.preventDefault();
   state.seed = Date.now() % 100000;
   state.candidate.alias = sanitize(els.aliasInput.value);
-  state.candidate.province = els.provinceSelect.value;
-  state.candidate.track = els.trackSelect.value;
-  state.candidate.ritual = els.ritualSelect.value;
-  state.candidate.work = els.workSelect.value;
-  state.candidate.restart = els.restartSelect.value;
-  state.candidate.family = els.familySelect.value;
-  state.candidate.personality = els.personalitySelect.value;
-  state.candidate.talent = els.talentSelect.value;
+  rollCandidateProfile();
 
   const ritual = rituals[state.candidate.ritual];
-  const work = currentWorks[state.candidate.work];
   const restart = restarts[state.candidate.restart];
+  const city = homeCityProfile(state.candidate.homeCity);
   const family = families[state.candidate.family];
   const personality = personalities[state.candidate.personality];
   const talent = talents[state.candidate.talent];
+  const hobby = hobbies[state.candidate.hobby];
+  const strength = strengths[state.candidate.strength];
+  const like = likes[state.candidate.like];
   const finalTotal = generateTotalScore();
   const [chinese, math, english, rest] = generateSubjects(finalTotal);
 
@@ -662,8 +735,9 @@ function generateScore(event) {
   enableStep("apply");
   addFeed("成绩查询", `${state.candidate.alias} 查到 ${finalTotal} 分，模拟位次 ${formatRank(state.candidate.rank)}，系统判定为「${scoreDrama(finalTotal)}」。`);
   addFeed("查分姿势", ritual.feed);
-  addFeed("重开剧本", `${work.name}选择了「${restart.name}」。${restart.feed}`);
-  addFeed("人生变量", `${family.name}、${personality.name}、${talent.name} 已写入投档副本。`);
+  addFeed("随机档案", `${city.name}、${family.name}、${personality.name}，爱好${hobby.name}，擅长${strength.name}。`);
+  addFeed("命运剧本", `系统抽中「${restart.name}」。${restart.feed}`);
+  addFeed("人生变量", `喜欢${like.name}，特长${talent.name}，已写入投档副本。`);
 }
 
 function renderCandidate() {
@@ -671,13 +745,15 @@ function renderCandidate() {
   els.candidateStatus.textContent = c.score ? "已查询" : "未查询";
   els.candidateNo.textContent = `${String(260000 + state.seed).slice(0, 4)}******`;
   els.candidateName.textContent = c.alias;
-  els.candidateProvince.textContent = c.score ? provinces[c.province].name : "待选择";
-  els.candidateTrack.textContent = c.score ? tracks[c.track].name : "待选择";
-  els.candidateWork.textContent = c.score ? currentWorks[c.work].name : "待选择";
-  els.candidateRestart.textContent = c.score ? restarts[c.restart].name : "待选择";
-  els.candidateFamily.textContent = c.score ? families[c.family].name : "待选择";
-  els.candidatePersonality.textContent = c.score ? personalities[c.personality].name : "待选择";
-  els.candidateTalent.textContent = c.score ? talents[c.talent].name : "待选择";
+  els.candidateProvince.textContent = c.score ? provinces[c.province].name : "待生成";
+  els.candidateTrack.textContent = c.score ? tracks[c.track].name : "待生成";
+  els.candidateCity.textContent = c.score ? homeCityProfile(c.homeCity).name : "待生成";
+  els.candidateFamily.textContent = c.score ? families[c.family].name : "待生成";
+  els.candidatePersonality.textContent = c.score ? personalities[c.personality].name : "待生成";
+  els.candidateHobby.textContent = c.score ? hobbies[c.hobby].name : "待生成";
+  els.candidateStrength.textContent = c.score ? strengths[c.strength].name : "待生成";
+  els.candidateLike.textContent = c.score ? likes[c.like].name : "待生成";
+  els.candidateTalent.textContent = c.score ? talents[c.talent].name : "待生成";
   els.candidateScore.textContent = c.score || "--";
   els.candidateRank.textContent = formatRank(c.rank);
 }
@@ -686,7 +762,7 @@ function renderScoreReport() {
   const c = state.candidate;
   els.scoreReport.classList.remove("hidden");
   els.scoreHeadline.textContent = `${c.alias}：${c.score} 分 · ${scoreDrama(c.score)}`;
-  els.scoreExplain.textContent = `${provinces[c.province].name} · ${tracks[c.track].name} · ${currentWorks[c.work].name} · ${restarts[c.restart].name} · ${families[c.family].name} · ${personalities[c.personality].name} · ${talents[c.talent].name}。模拟位次 ${formatRank(c.rank)}，可以开始填报本/专科平行志愿。`;
+  els.scoreExplain.textContent = `${provinces[c.province].name} · ${tracks[c.track].name} · ${homeCityProfile(c.homeCity).name} · ${families[c.family].name} · ${personalities[c.personality].name} · 爱好${hobbies[c.hobby].name} · 擅长${strengths[c.strength].name} · 喜欢${likes[c.like].name} · 特长${talents[c.talent].name}。模拟位次 ${formatRank(c.rank)}，可以开始填报本/专科平行志愿。`;
   els.scoreTotal.textContent = c.score;
   els.subjectGrid.innerHTML = "";
   c.subjects.forEach(([name, score, desc]) => {
@@ -741,9 +817,12 @@ function schoolMeme(school) {
 function preferredMajors() {
   const c = state.candidate;
   return [
-    ...tracks[c.track].majorFit,
-    ...personalities[c.personality].majors,
-    ...talents[c.talent].majors
+    ...(tracks[c.track]?.majorFit || []),
+    ...(personalities[c.personality]?.majors || []),
+    ...(talents[c.talent]?.majors || []),
+    ...(hobbies[c.hobby]?.majors || []),
+    ...(strengths[c.strength]?.majors || []),
+    ...(likes[c.like]?.majors || [])
   ];
 }
 
@@ -923,6 +1002,9 @@ function calculateMetrics() {
   const family = families[state.candidate.family];
   const personality = personalities[state.candidate.personality];
   const talent = talents[state.candidate.talent];
+  const city = homeCityProfile(state.candidate.homeCity);
+  const strength = strengths[state.candidate.strength];
+  const like = likes[state.candidate.like];
   filled.forEach((slot) => {
     const school = schools.find((item) => item.code === slot.code);
     const risk = riskOf(school).key;
@@ -933,10 +1015,10 @@ function calculateMetrics() {
     parent += slot.obey ? -3 : 8;
   });
   return {
-    rush: clamp(Math.round(rush / filled.length + personality.rush + family.ambition), 0, 100),
-    stable: clamp(Math.round(stable / filled.length + family.stable), 0, 100),
-    fit: clamp(Math.round(fit / filled.length + personality.fit + (fitMajors.includes(talent.majors[0]) ? 3 : 0)), 0, 100),
-    parent: clamp(Math.round(parent + family.parent / 2 + personality.parent), 0, 100)
+    rush: clamp(Math.round(rush / filled.length + personality.rush + family.ambition + city.ambition + like.ambition), 0, 100),
+    stable: clamp(Math.round(stable / filled.length + family.stable + city.stable + like.stable), 0, 100),
+    fit: clamp(Math.round(fit / filled.length + personality.fit + strength.fit + (fitMajors.includes(talent.majors[0]) ? 3 : 0)), 0, 100),
+    parent: clamp(Math.round(parent + family.parent / 2 + personality.parent + like.parent), 0, 100)
   };
 }
 
@@ -970,11 +1052,14 @@ function majorCareer(major) {
 
 function buildLifeOutcome(result) {
   const c = state.candidate;
-  const work = currentWorks[c.work];
   const restart = restarts[c.restart];
+  const city = homeCityProfile(c.homeCity);
   const family = families[c.family];
   const personality = personalities[c.personality];
   const talent = talents[c.talent];
+  const hobby = hobbies[c.hobby];
+  const strength = strengths[c.strength];
+  const like = likes[c.like];
   const career = majorCareer(result.major);
   const cityText = result.school.city && result.school.city !== "待定" ? result.school.city : "一座录取通知书决定的城市";
   const tierText = result.school.tier === "985"
@@ -1002,18 +1087,18 @@ function buildLifeOutcome(result) {
           ? "S 反转预告片"
           : "A- 现实主义好结局";
   const chapters = [
-    `18 岁：${scoreDrama(c.score)}，带着「${restart.name}」剧本抵达${cityText}，第一天就把宿舍、食堂和未来一起加入收藏。`,
-    `22 岁：从 ${result.major} 毕业，简历第一行写着 ${result.school.name}，第二行开始解释自己为什么很能扛事。`,
+    `18 岁：${scoreDrama(c.score)}，${city.name}出发，带着「${restart.name}」剧本抵达${cityText}，第一天就把宿舍、食堂和未来一起加入收藏。`,
+    `22 岁：从 ${result.major} 毕业，简历第一行写着 ${result.school.name}，第二行开始解释自己擅长${strength.name}。`,
     `28 岁：走向「${career.job}」路线，偶尔下班后想起当年的志愿表，发现那一页真的改写了很多东西。`
   ];
   return {
-    profile: `现世${work.name}，重开为${family.name}出身的${personality.name}，特长为${talent.name}`,
+    profile: `${city.name}，${family.name}，${personality.name}，爱好${hobby.name}，擅长${strength.name}，喜欢${like.name}，特长${talent.name}`,
     route: `${cityText} · ${result.school.name} · ${result.major}`,
     career: career.job,
     field: career.field,
     schoolMeme: schoolMeme(result.school),
     headline: `${result.major}毕业后，大概率走向「${career.job}」路线`,
-    future: `${work.twist}${fateMap[result.type]} ${tierText}。${family.copy}${personality.copy}${talent.copy}${career.scene}`,
+    future: `${fateMap[result.type]} ${tierText}。${city.copy}${family.copy}${personality.copy}${hobby.copy}${strength.copy}${like.copy}${talent.copy}${career.scene}`,
     chapters,
     program: `节目效果评级：${programLevel}。`
   };
@@ -1022,8 +1107,9 @@ function buildLifeOutcome(result) {
 function startCeremony() {
   const c = state.candidate;
   const steps = [
-    `校验现世身份：${currentWorks[c.work].name}申请人生重开`,
-    `读取重开变量：${restarts[c.restart].name} / ${families[c.family].name} / ${personalities[c.personality].name} / ${talents[c.talent].name}`,
+    `生成考生底牌：${homeCityProfile(c.homeCity).name} / ${families[c.family].name} / ${personalities[c.personality].name}`,
+    `读取随机变量：爱好${hobbies[c.hobby].name} / 擅长${strengths[c.strength].name} / 喜欢${likes[c.like].name} / 特长${talents[c.talent].name}`,
+    `抽取命运剧本：${restarts[c.restart].name}`,
     "读取 A-F 志愿表：冲稳保、民办、职教路线进入系统队列",
     "执行一轮投档：后续志愿正在屏息等待",
     "生成毕业去向：十年后人生副本开始排队"
@@ -1324,14 +1410,6 @@ function downloadPoster() {
 function resetGame() {
   state = initialState();
   els.aliasInput.value = "查分同学";
-  els.provinceSelect.value = "henan";
-  els.trackSelect.value = "physics";
-  els.ritualSelect.value = "steady";
-  els.workSelect.value = "overtime";
-  els.restartSelect.value = "blindbox";
-  els.familySelect.value = "ordinary";
-  els.personalitySelect.value = "steady";
-  els.talentSelect.value = "coding";
   els.scoreReport.classList.add("hidden");
   els.subjectGrid.innerHTML = "";
   els.applicationBody.innerHTML = "";

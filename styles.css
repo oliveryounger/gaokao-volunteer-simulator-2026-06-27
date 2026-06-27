@@ -416,9 +416,9 @@ select {
 .query-form {
   flex: none;
   display: grid;
-  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
-  width: min(920px, 100%);
+  width: min(460px, 100%);
 }
 
 .query-form label {
