@@ -416,9 +416,9 @@ select {
 .query-form {
   flex: none;
   display: grid;
-  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
   gap: 10px;
-  width: min(660px, 100%);
+  width: min(920px, 100%);
 }
 
 .query-form label {
@@ -529,7 +529,7 @@ select {
 
 table {
   width: 100%;
-  min-width: 860px;
+  min-width: 980px;
   border-collapse: collapse;
   background: #fff;
 }
@@ -647,6 +647,23 @@ tr:last-child td {
 .tier-985 { color: var(--red); }
 .tier-211 { color: var(--blue-800); }
 .tier-public { color: var(--green); }
+.tier-private { color: #8a4b00; }
+.tier-vocational { color: #6b4bb8; }
+
+.school-meme {
+  max-width: 260px;
+  color: #47576b;
+  line-height: 1.45;
+}
+
+.school-meme-inline {
+  display: inline-block;
+  max-width: 260px;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
 
 .result-card {
   display: grid;
@@ -762,6 +779,25 @@ tr:last-child td {
   margin: 0;
   color: #4d432f;
   line-height: 1.58;
+}
+
+.life-chapters {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.life-chapters li {
+  padding: 9px 10px;
+  border: 1px solid #efd8ad;
+  border-left: 4px solid var(--orange);
+  border-radius: 4px;
+  background: #fffdf8;
+  color: #4d432f;
+  line-height: 1.5;
+  font-weight: 700;
 }
 
 .life-forecast dl {
@@ -928,6 +964,6 @@ tr:last-child td {
   }
 
   table {
-    min-width: 760px;
+    min-width: 900px;
   }
 }

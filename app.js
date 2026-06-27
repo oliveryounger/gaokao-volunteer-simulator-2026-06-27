@@ -13,6 +13,8 @@ const els = {
   provinceSelect: $("#provinceSelect"),
   trackSelect: $("#trackSelect"),
   ritualSelect: $("#ritualSelect"),
+  workSelect: $("#workSelect"),
+  restartSelect: $("#restartSelect"),
   familySelect: $("#familySelect"),
   personalitySelect: $("#personalitySelect"),
   talentSelect: $("#talentSelect"),
@@ -27,6 +29,8 @@ const els = {
   candidateName: $("#candidateName"),
   candidateProvince: $("#candidateProvince"),
   candidateTrack: $("#candidateTrack"),
+  candidateWork: $("#candidateWork"),
+  candidateRestart: $("#candidateRestart"),
   candidateFamily: $("#candidateFamily"),
   candidatePersonality: $("#candidatePersonality"),
   candidateTalent: $("#candidateTalent"),
@@ -90,6 +94,43 @@ const rituals = {
   f5: { name: "F5 连点，服务器求饶", score: -10, feed: "服务器没有崩，但你的心态先排队了。" }
 };
 
+const currentWorks = {
+  overtime: { name: "互联网加班中", score: 2, copy: "现世已经会写周报，重开后看招生章程像看 PRD。", twist: "从需求评审桌边穿越回考场，第一反应是问有没有截止时间。" },
+  office: { name: "办公室材料人", score: 5, copy: "材料写多了，志愿表也能排出公文格式。", twist: "把 A-F 志愿填出了红头文件的庄严感，人生突然像进入审批流。" },
+  finance: { name: "金融/咨询做表中", score: 4, copy: "会用 Excel 算命，看到位次先做敏感性分析。", twist: "查分时脑内自动生成三页 PPT：机会、风险、下一步。" },
+  sales: { name: "销售/运营跑动中", score: -2, copy: "擅长临场发挥，也擅长把滑档讲成增长空间。", twist: "把每所大学都当客户拜访，连调剂都能聊出合作意向。" },
+  freelance: { name: "自由职业试炼中", score: -4, copy: "不怕路径非标，只怕余额非标。", twist: "重新高考的意义是：至少录取通知书比甲方回款准时。" },
+  teacher: { name: "上岸后讲题中", score: 8, copy: "终于知道老师当年为什么能预判所有低级错误。", twist: "一边查分一边想讲评，最后发现被讲评的是自己的人生。" }
+};
+
+const restarts = {
+  blindbox: {
+    name: "命运盲盒",
+    feed: "系统已打开命运盲盒：可能清北边缘，也可能专科逆袭。",
+    bands: [[210, 360, 16], [361, 470, 22], [471, 570, 28], [571, 650, 22], [651, 735, 12]]
+  },
+  elite: {
+    name: "学霸爽文",
+    feed: "爽文模式启动：亲戚群将短暂进入只读状态。",
+    bands: [[560, 620, 18], [621, 685, 52], [686, 744, 30]]
+  },
+  normal: {
+    name: "普通发挥",
+    feed: "普通发挥模式：最像真实人生，最容易让人沉默两秒。",
+    bands: [[330, 430, 14], [431, 520, 34], [521, 600, 34], [601, 675, 18]]
+  },
+  meltdown: {
+    name: "考场断片",
+    feed: "断片模式启动：笔在写，魂在走廊散步。",
+    bands: [[160, 300, 42], [301, 420, 34], [421, 540, 18], [541, 630, 6]]
+  },
+  chaos: {
+    name: "逆天改命",
+    feed: "大起大落剪辑版：不是封神就是进下集预告。",
+    bands: [[180, 330, 24], [331, 470, 18], [471, 600, 18], [601, 690, 25], [691, 748, 15]]
+  }
+};
+
 const families = {
   ordinary: { name: "普通工薪家庭", score: 0, parent: 42, stable: 8, ambition: 0, copy: "家里口径统一：学校别太远，专业别太虚。" },
   teacher: { name: "教师家庭", score: 6, parent: 58, stable: 12, ambition: -4, copy: "招生章程会被逐字审判，标点符号都不能幸免。" },
@@ -131,15 +172,59 @@ const majorFactors = {
   "工科试验班": .86,
   "自动化类": .9,
   "数学类": .88,
+  "统计学类": .86,
   "工商管理类": 1.1,
+  "会计学": .9,
+  "审计学": .88,
+  "心理学类": .96,
+  "社会学类": 1.06,
+  "农学类": 1.08,
+  "林学类": 1.1,
+  "海洋科学类": 1.08,
+  "生态学类": 1.1,
+  "考古学类": 1.12,
+  "药学类": .9,
+  "护理学": 1.05,
+  "生物医药类": .94,
   "材料类": 1.18,
   "环境科学与工程类": 1.2,
-  "公共管理类": 1.16
+  "公共管理类": 1.16,
+  "大气科学类": .86,
+  "通信工程": .78,
+  "食品科学与工程类": 1.12,
+  "地质类": 1.15,
+  "旅游管理类": 1.22,
+  "机械类": 1.04,
+  "车辆工程": .98,
+  "建筑类": .96,
+  "土木工程类": 1.08,
+  "电气工程类": .86,
+  "化工与制药类": 1.06,
+  "安全工程": 1.08,
+  "质量管理工程": 1.1,
+  "光电信息科学与工程": .9,
+  "纺织工程": 1.16,
+  "教育学类": 1.08,
+  "设计学类": 1.02,
+  "服装与服饰设计": 1.18,
+  "石油工程": 1.06,
+  "交通运输类": .98,
+  "水利类": 1,
+  "铁道交通运营管理": 1.08,
+  "软件技术": .92,
+  "电子商务": 1.14,
+  "现代物流管理": 1.18,
+  "工程造价": 1.1,
+  "测绘工程技术": 1.12,
+  "智能制造工程技术": 1.02,
+  "口腔医学技术": .92,
+  "民航运输服务": 1.1,
+  "学前教育": 1.12
 };
 
-const adjustMajors = ["材料类", "环境科学与工程类", "公共管理类", "工商管理类", "外国语言文学类"];
+const adjustMajors = ["材料类", "环境科学与工程类", "公共管理类", "工商管理类", "外国语言文学类", "旅游管理类", "现代物流管理", "电子商务"];
 
-const schools = [
+const schoolTuples = [
   ["4111010003","清华大学","教育部","北京市","985",160,99,["计算机类","人工智能","电子信息类","工科试验班","法学"]],
   ["4111010001","北京大学","教育部","北京市","985",210,99,["数学类","计算机类","临床医学","法学","经济学类"]],
   ["4131010248","上海交通大学","教育部","上海市","985",620,98,["计算机类","人工智能","电子信息类","临床医学","工科试验班"]],
@@ -212,7 +297,176 @@ const schools = [
   ["4132010320","江苏师范大学","江苏省","徐州市","public",160000,58,["师范类","汉语言文学","数学类","计算机类","公共管理类"]],
   ["4145010595","桂林电子科技大学","广西壮族自治区","桂林市","public",125000,63,["电子信息类","计算机类","人工智能","自动化类","材料类"]],
   ["4112010070","天津财经大学","天津市","天津市","public",98000,68,["金融学类","经济学类","工商管理类","法学","公共管理类"]]
-].map(([code, name, admin, city, tier, baseRank, heat, majors]) => ({ code, name, admin, city, tier, baseRank, heat, majors }));
+];
+
+const extraSchoolTuples = [
+  ["4111010007","北京理工大学","工业和信息化部","北京市","985",3000,94,["工科试验班","人工智能","电子信息类","自动化类","计算机类"],"工科硬核本，朋友圈会自动出现“保密单位感”。"],
+  ["4111010019","中国农业大学","教育部","北京市","985",14000,86,["农学类","食品科学与工程类","电子信息类","工商管理类","经济学类"],"听起来种地，实际是把饭碗研究到国家级。"],
+  ["4137010422","山东大学","教育部","济南市","985",12000,86,["临床医学","数学类","计算机类","法学","经济学类"],"体量很大，像把青春开成了集团军。"],
+  ["4137010423","中国海洋大学","教育部","青岛市","985",26000,80,["海洋科学类","食品科学与工程类","计算机类","经济学类","法学"],"海风、海鲜、海量作业，蓝色滤镜拉满。"],
+  ["4143010532","湖南大学","教育部","长沙市","985",17500,84,["工科试验班","计算机类","金融学类","法学","建筑类"],"岳麓山下上课，奶茶和论文都容易超标。"],
+  ["4143010533","中南大学","教育部","长沙市","985",13500,86,["临床医学","材料类","计算机类","交通运输类","自动化类"],"工医双线拉满，实验室和医院都很有存在感。"],
+  ["4111010052","中央民族大学","国家民委","北京市","985",29000,78,["社会学类","法学","新闻传播学类","经济学类","公共管理类"],"北京城里的人文副本，校园生活自带多元文化混剪。"],
+  ["4111010004","北京交通大学","教育部","北京市","211",19000,86,["交通运输类","通信工程","计算机类","电子信息类","经济学类"],"铁道血脉觉醒，人生从此按列车运行图推进。"],
+  ["4111010010","北京化工大学","教育部","北京市","211",42000,77,["材料类","工科试验班","自动化类","计算机类","工商管理类"],"化工人嘴上低调，实验服上写满含金量。"],
+  ["4111010022","北京林业大学","教育部","北京市","211",52000,74,["林学类","环境科学与工程类","设计学类","工商管理类","计算机类"],"城市里研究森林，精神状态比空气质量更需要监测。"],
+  ["4111010030","北京外国语大学","教育部","北京市","211",21000,84,["外国语言文学类","新闻传播学类","法学","经济学类","工商管理类"],"开口像国际会议，作业像联合国文件。"],
+  ["4111010054","华北电力大学","教育部","北京市","211",36000,82,["电子信息类","自动化类","工科试验班","计算机类","工商管理类"],"电力系统隐藏大佬，毕业去向听起来都很稳定。"],
+  ["4111010005","北京工业大学","北京市","北京市","211",47000,76,["计算机类","电子信息类","自动化类","材料类","工商管理类"],"北京本地强校，通勤半径里藏着一条工科支线。"],
+  ["4131010271","上海外国语大学","教育部","上海市","211",26000,82,["外国语言文学类","新闻传播学类","法学","经济学类","工商管理类"],"沪上语言副本，简历一打开就有国际化语气。"],
+  ["4132010319","南京师范大学","江苏省","南京市","211",45000,78,["师范类","汉语言文学","心理学类","数学类","新闻传播学类"],"未来班主任预备役，粉笔灰和咖啡因双修。"],
+  ["4132010294","河海大学","教育部","南京市","211",36000,81,["水利类","环境科学与工程类","计算机类","工科试验班","工商管理类"],"名字温柔，专业很硬，人生开始研究水往哪里流。"],
+  ["4132010295","江南大学","教育部","无锡市","211",43000,79,["食品科学与工程类","设计学类","计算机类","工商管理类","电子信息类"],"甜口工科，食品和设计都能把朋友圈拍好看。"],
+  ["4132010290","中国矿业大学","教育部","徐州市","211",58000,73,["工科试验班","地质类","计算机类","机械类","材料类"],"名字朴素但底盘扎实，适合把人生挖出深度。"],
+  ["4132010316","中国药科大学","教育部","南京市","211",54000,74,["药学类","临床医学","工商管理类","经济学类","生物医药类"],"药不能停，课也不能停，健康产业支线开启。"],
+  ["4134010357","安徽大学","安徽省","合肥市","211",69000,72,["计算机类","法学","新闻传播学类","经济学类","汉语言文学"],"合肥隐藏性价比卡，主打一个低调上桌。"],
+  ["4134010359","合肥工业大学","教育部","合肥市","211",42000,80,["工科试验班","车辆工程","计算机类","电子信息类","自动化类"],"工科含量高，毕业后和机器互相理解。"],
+  ["4137010425","中国石油大学（华东）","教育部","青岛市","211",52000,76,["石油工程","工科试验班","计算机类","经济学类","材料类"],"能源线开局，海边读书但脑子里全是油气田。"],
+  ["4142010497","武汉理工大学","教育部","武汉市","211",30000,82,["材料类","交通运输类","计算机类","工科试验班","工商管理类"],"材料、交通、船车齐活，武汉夏天负责加练意志力。"],
+  ["4142010511","华中师范大学","教育部","武汉市","211",39000,79,["师范类","心理学类","汉语言文学","数学类","计算机类"],"师范界强卡，适合从被点名的人变成点名的人。"],
+  ["4142010504","华中农业大学","教育部","武汉市","211",61000,72,["农学类","食品科学与工程类","环境科学与工程类","工商管理类","计算机类"],"农业不土，科研很硬，连食堂都像专业实践。"],
+  ["4142010520","中南财经政法大学","教育部","武汉市","211",26000,84,["法学","金融学类","经济学类","会计学","公共管理类"],"财经和法学双 buff，饭桌争论从此自带引用。"],
+  ["4143010542","湖南师范大学","湖南省","长沙市","211",62000,72,["师范类","汉语言文学","数学类","法学","心理学类"],"长沙教育线，早八之后用辣椒恢复精神。"],
+  ["4145010593","广西大学","广西壮族自治区","南宁市","211",88000,68,["工科试验班","计算机类","经济学类","农学类","新闻传播学类"],"南宁大卡，热带气候和广阔校园一起开局。"],
+  ["4146010589","海南大学","海南省","海口市","211",82000,70,["法学","旅游管理类","食品科学与工程类","计算机类","工商管理类"],"海岛求学线，写论文时窗外像度假广告。"],
+  ["4151010613","西南交通大学","教育部","成都市","211",28000,83,["交通运输类","工科试验班","计算机类","电子信息类","经济学类"],"轨道交通王牌，人生像高铁一样准点开卷。"],
+  ["4150010635","西南大学","教育部","重庆市","211",52000,76,["师范类","心理学类","农学类","计算机类","经济学类"],"重庆大校，火锅、山路、论文三线并行。"],
+  ["4153010673","云南大学","云南省","昆明市","211",70000,72,["生态学类","法学","计算机类","经济学类","新闻传播学类"],"昆明春城副本，气候温柔但期末不温柔。"],
+  ["4152010657","贵州大学","贵州省","贵阳市","211",95000,66,["计算机类","法学","材料类","农学类","工商管理类"],"西南性价比卡，山城滤镜和上岸心态都很稳。"],
+  ["4161010697","西北大学","陕西省","西安市","211",52000,76,["考古学类","经济学类","计算机类","汉语言文学","地质类"],"西安文理老牌，朋友圈会突然出现博物馆审美。"],
+  ["4161010710","长安大学","教育部","西安市","211",56000,74,["交通运输类","工科试验班","地质类","计算机类","工商管理类"],"名字像武侠门派，专业像基建现场。"],
+  ["4161010718","陕西师范大学","教育部","西安市","211",60000,73,["师范类","汉语言文学","心理学类","数学类","外国语言文学类"],"古都师范线，读完以后讲课也自带历史感。"],
+  ["4163010743","青海大学","青海省","西宁市","211",135000,60,["临床医学","环境科学与工程类","农学类","材料类","计算机类"],"高原副本开启，朋友圈含氧量降低但故事感升高。"],
+  ["4164010749","宁夏大学","宁夏回族自治区","银川市","211",130000,60,["农学类","师范类","计算机类","经济学类","法学"],"西北稳妥卡，适合把人生节奏调慢一点。"],
+  ["4165010755","新疆大学","新疆维吾尔自治区","乌鲁木齐市","211",125000,61,["计算机类","法学","经济学类","环境科学与工程类","新闻传播学类"],"远方感直接拉满，录取通知书像一张长途车票。"],
+  ["4165010759","石河子大学","新疆生产建设兵团","石河子市","211",150000,58,["临床医学","农学类","师范类","计算机类","工商管理类"],"边疆成长线，毕业故事比简历还长。"],
+  ["4115010126","内蒙古大学","内蒙古自治区","呼和浩特市","211",110000,63,["计算机类","法学","生态学类","经济学类","汉语言文学"],"草原大风版大学生活，精神边界会被吹开。"],
+  ["4121010140","辽宁大学","辽宁省","沈阳市","211",85000,69,["经济学类","法学","新闻传播学类","工商管理类","计算机类"],"东北文经法路线，幽默感可能比绩点更早毕业。"],
+  ["4121010151","大连海事大学","交通运输部","大连市","211",52000,76,["交通运输类","法学","电子信息类","计算机类","工商管理类"],"海事线开局，连毕业照都像准备出航。"],
+  ["4122010200","东北师范大学","教育部","长春市","211",56000,74,["师范类","心理学类","汉语言文学","数学类","计算机类"],"东北师范强卡，冬天负责筛选意志力。"],
+  ["4123010217","哈尔滨工程大学","工业和信息化部","哈尔滨市","211",32000,82,["工科试验班","电子信息类","自动化类","计算机类","材料类"],"船舶海工硬核本，冷风和专业强度都很正宗。"],
+  ["4112010058","天津工业大学","天津市","天津市","211",64000,72,["纺织工程","材料类","计算机类","电子信息类","工商管理类"],"双一流低调卡，专业名字朴素但就业线很实在。"],
+  ["4114010112","太原理工大学","山西省","太原市","211",72000,70,["工科试验班","计算机类","机械类","材料类","电子信息类"],"老牌工科，适合把人生拧成一颗可靠螺丝。"],
+  ["4131010252","上海理工大学","上海市","上海市","public",76000,72,["工科试验班","计算机类","机械类","电子信息类","工商管理类"],"沪上工科性价比卡，地铁能到的野心。"],
+  ["4131010270","上海师范大学","上海市","上海市","public",90000,68,["师范类","汉语言文学","心理学类","新闻传播学类","数学类"],"上海教育线，讲台和咖啡馆之间反复横跳。"],
+  ["4131010273","上海对外经贸大学","上海市","上海市","public",65000,74,["经济学类","金融学类","外国语言文学类","法学","工商管理类"],"外贸副本，连小组作业都像跨境会议。"],
+  ["4131011835","上海政法学院","上海市","上海市","public",115000,62,["法学","社会学类","新闻传播学类","公共管理类","经济学类"],"法政路线，适合把人生争议写成规范表述。"],
+  ["4132010291","南京工业大学","江苏省","南京市","public",78000,70,["工科试验班","材料类","化工与制药类","计算机类","建筑类"],"南京工科耐力赛，实验报告会教你做人。"],
+  ["4132011287","南京审计大学","江苏省","南京市","public",52000,78,["审计学","会计学","金融学类","经济学类","法学"],"查账天赋觉醒，连人生选择都想留底稿。"],
+  ["4132010299","江苏大学","江苏省","镇江市","public",92000,66,["机械类","临床医学","计算机类","食品科学与工程类","工商管理类"],"综合实力很实在，镇江副本比想象中耐玩。"],
+  ["4132011117","扬州大学","江苏省","扬州市","public",98000,65,["师范类","临床医学","农学类","汉语言文学","工商管理类"],"烟火气校园线，早茶和早八谁更难起要看命。"],
+  ["4132010304","南通大学","江苏省","南通市","public",135000,60,["临床医学","师范类","计算机类","电子信息类","工商管理类"],"江海城市成长线，不炸裂但很能过日子。"],
+  ["4133010337","浙江工业大学","浙江省","杭州市","public",56000,77,["工科试验班","计算机类","机械类","材料类","工商管理类"],"杭州工科强卡，毕业后离互联网工位很近。"],
+  ["4133010345","浙江师范大学","浙江省","金华市","public",88000,68,["师范类","汉语言文学","数学类","心理学类","计算机类"],"师范稳定线，金华火腿和教案一起入味。"],
+  ["4133010353","浙江工商大学","浙江省","杭州市","public",76000,70,["工商管理类","会计学","经济学类","金融学类","法学"],"商科现实主义，课程表像提前预习打工。"],
+  ["4133010356","中国计量大学","浙江省","杭州市","public",90000,66,["质量管理工程","电子信息类","自动化类","计算机类","工商管理类"],"人生开始精确到小数点，连焦虑都想校准。"],
+  ["4133010346","杭州师范大学","浙江省","杭州市","public",82000,69,["师范类","计算机类","汉语言文学","心理学类","法学"],"杭州教育线，湖边散步和绩点焦虑并不冲突。"],
+  ["4133010343","温州医科大学","浙江省","温州市","public",64000,75,["临床医学","口腔医学技术","药学类","护理学","生物医药类"],"医学副本强度高，温州人会顺便问你职业规划。"],
+  ["4134010370","安徽师范大学","安徽省","芜湖市","public",120000,62,["师范类","汉语言文学","数学类","法学","心理学类"],"稳定师范线，适合把人生讲成板书。"],
+  ["4134010378","安徽财经大学","安徽省","蚌埠市","public",105000,64,["会计学","金融学类","经济学类","工商管理类","法学"],"财经性价比路线，算盘声里有命运回响。"],
+  ["4134010361","安徽理工大学","安徽省","淮南市","public",150000,58,["工科试验班","安全工程","机械类","计算机类","材料类"],"工科耐力线，适合把每次实验都当主线任务。"],
+  ["4137011065","青岛大学","山东省","青岛市","public",85000,68,["临床医学","计算机类","经济学类","新闻传播学类","工商管理类"],"海边综合卡，简历和海风都比较清爽。"],
+  ["4137010445","山东师范大学","山东省","济南市","public",115000,63,["师范类","心理学类","汉语言文学","数学类","新闻传播学类"],"齐鲁师范线，讲课气场会逐渐变稳。"],
+  ["4137010456","山东财经大学","山东省","济南市","public",96000,66,["金融学类","会计学","经济学类","工商管理类","法学"],"财经现实主义，报表会比理想先成熟。"],
+  ["4141010476","河南师范大学","河南省","新乡市","public",135000,60,["师范类","数学类","汉语言文学","计算机类","心理学类"],"河南考生友好卡，教师副本开始加载。"],
+  ["4141010460","河南理工大学","河南省","焦作市","public",155000,58,["机械类","安全工程","计算机类","材料类","工商管理类"],"老工科底盘，适合把人生从矿图画到甘特图。"],
+  ["4141010078","华北水利水电大学","河南省","郑州市","public",125000,62,["水利类","工科试验班","计算机类","环境科学与工程类","工商管理类"],"水利硬卡，名字一出来家长血压先稳一截。"],
+  ["4141010477","信阳师范大学","河南省","信阳市","public",210000,52,["师范类","汉语言文学","数学类","心理学类","公共管理类"],"茶乡师范线，人生进入慢热但稳定章节。"],
+  ["4141010462","郑州轻工业大学","河南省","郑州市","public",175000,56,["食品科学与工程类","设计学类","计算机类","机械类","工商管理类"],"轻工不轻，作业和就业都很现实。"],
+  ["4142010512","湖北大学","湖北省","武汉市","public",110000,64,["师范类","汉语言文学","计算机类","法学","经济学类"],"武汉综合卡，普通但耐玩，适合后期发育。"],
+  ["4142010488","武汉科技大学","湖北省","武汉市","public",90000,68,["材料类","机械类","计算机类","自动化类","临床医学"],"钢铁工科魂，夏天和实验都能淬火。"],
+  ["4142011075","三峡大学","湖北省","宜昌市","public",150000,58,["水利类","临床医学","电气工程类","计算机类","工商管理类"],"峡江副本，水电和山风都很有存在感。"],
+  ["4143010530","湘潭大学","湖南省","湘潭市","public",80000,70,["法学","数学类","计算机类","汉语言文学","经济学类"],"老牌实力卡，懂的人会点头，不懂的人会去查。"],
+  ["4143010536","长沙理工大学","湖南省","长沙市","public",88000,68,["交通运输类","工科试验班","电子信息类","计算机类","会计学"],"交通电力线，长沙夜宵负责回血。"],
+  ["4143010534","湖南科技大学","湖南省","湘潭市","public",145000,58,["师范类","机械类","计算机类","土木工程类","工商管理类"],"综合耐力卡，故事不花哨但能一路打。"],
+  ["4144011078","广州大学","广东省","广州市","public",90000,68,["计算机类","法学","师范类","建筑类","工商管理类"],"广州本地卡，早茶和通勤共同塑造人格。"],
+  ["4144010592","广东财经大学","广东省","广州市","public",78000,70,["金融学类","会计学","法学","经济学类","工商管理类"],"珠三角财经线，实习像提前开服。"],
+  ["4144011540","广东金融学院","广东省","广州市","public",115000,62,["金融学类","会计学","经济学类","工商管理类","计算机类"],"金融应用卡，毕业后看见利率会有条件反射。"],
+  ["4144010570","广州医科大学","广东省","广州市","public",52000,78,["临床医学","药学类","护理学","公共管理类","生物医药类"],"医学强线，白大褂和珠江夜色一起出现。"],
+  ["4144010560","汕头大学","广东省","汕头市","public",95000,66,["临床医学","新闻传播学类","法学","工商管理类","计算机类"],"潮汕综合卡，食堂诱惑可能影响绩点。"],
+  ["4144010588","广东技术师范大学","广东省","广州市","public",185000,54,["师范类","计算机类","电子信息类","工商管理类","设计学类"],"技术师范线，既能讲课也能修系统。"],
+  ["4145010602","广西师范大学","广西壮族自治区","桂林市","public",160000,57,["师范类","汉语言文学","数学类","法学","旅游管理类"],"桂林山水版师范副本，风景负责提高续航。"],
+  ["4145010596","桂林理工大学","广西壮族自治区","桂林市","public",170000,56,["工科试验班","地质类","材料类","计算机类","旅游管理类"],"山水工科线，画风温柔但作业很硬。"],
+  ["4151010636","四川师范大学","四川省","成都市","public",120000,63,["师范类","汉语言文学","心理学类","数学类","法学"],"成都师范线，稳定与巴适之间寻找平衡。"],
+  ["4151010615","西南石油大学","四川省","成都市","public",82000,70,["石油工程","工科试验班","计算机类","机械类","工商管理类"],"能源工科卡，名字像去远方，校区在成都。"],
+  ["4151010621","成都信息工程大学","四川省","成都市","public",105000,64,["大气科学类","计算机类","通信工程","电子信息类","统计学类"],"天气和代码双修，适合预测明天会不会加班。"],
+  ["4150010618","重庆交通大学","重庆市","重庆市","public",120000,62,["交通运输类","工科试验班","水利类","计算机类","工商管理类"],"山城交通线，人生道路开始研究坡度。"],
+  ["4150010652","西南政法大学","重庆市","重庆市","public",48000,80,["法学","新闻传播学类","公共管理类","经济学类","工商管理类"],"法学名场面预备役，吵架从此讲证据链。"],
+  ["4153010689","云南财经大学","云南省","昆明市","public",145000,58,["金融学类","会计学","经济学类","工商管理类","法学"],"春城财经线，气候稳定但 KPI 不一定。"],
+  ["4152010671","贵州财经大学","贵州省","贵阳市","public",175000,55,["会计学","金融学类","经济学类","工商管理类","公共管理类"],"西南财经应用卡，务实路线开始生效。"],
+  ["4161011664","西安邮电大学","陕西省","西安市","public",90000,68,["通信工程","计算机类","人工智能","电子信息类","自动化类"],"通信人集合点，网速和心跳都想拉满。"],
+  ["4161010700","西安理工大学","陕西省","西安市","public",115000,63,["工科试验班","水利类","机械类","电子信息类","计算机类"],"西安工科卡，稳定得像一台老设备。"],
+  ["4161010703","西安建筑科技大学","陕西省","西安市","public",105000,64,["建筑类","土木工程类","环境科学与工程类","材料类","工商管理类"],"建筑土木线，画图到凌晨也要有结构感。"],
+  ["4162010732","兰州交通大学","甘肃省","兰州市","public",145000,58,["交通运输类","铁道交通运营管理","计算机类","机械类","工商管理类"],"西北交通线，人生开始按车次编号。"],
+  ["4162010731","兰州理工大学","甘肃省","兰州市","public",165000,56,["机械类","材料类","工科试验班","计算机类","工商管理类"],"工科耐力卡，黄河风和实验报告都很真实。"],
+  ["4123010212","黑龙江大学","黑龙江省","哈尔滨市","public",135000,60,["外国语言文学类","法学","汉语言文学","计算机类","经济学类"],"东北综合文科强卡，冬天会帮你压缩杂念。"],
+  ["4122010186","长春理工大学","吉林省","长春市","public",120000,62,["光电信息科学与工程","电子信息类","计算机类","机械类","材料类"],"光电硬卡，名字低调但专业很亮。"],
+  ["4122010207","吉林财经大学","吉林省","长春市","public",165000,55,["会计学","金融学类","经济学类","工商管理类","法学"],"东北财经应用线，冷风吹不散账本。"],
+  ["4113010216","燕山大学","河北省","秦皇岛市","public",90000,68,["机械类","材料类","计算机类","电子信息类","工商管理类"],"海边工科强校，名字像武侠，专业像重装战士。"],
+  ["4113010075","河北大学","河北省","保定市","public",130000,60,["新闻传播学类","法学","汉语言文学","计算机类","经济学类"],"综合老牌卡，保定副本主打扎实。"],
+  ["4113010094","河北师范大学","河北省","石家庄市","public",155000,57,["师范类","汉语言文学","数学类","心理学类","计算机类"],"燕赵师范线，稳稳把人生讲成知识点。"],
+  ["4113011832","河北经贸大学","河北省","石家庄市","public",180000,54,["会计学","金融学类","经济学类","工商管理类","法学"],"经贸实用卡，适合提前理解打工世界。"],
+  ["4112010065","天津师范大学","天津市","天津市","public",125000,62,["师范类","心理学类","汉语言文学","新闻传播学类","法学"],"天津教育线，说相声般消化教学压力。"],
+  ["4112010060","天津理工大学","天津市","天津市","public",140000,60,["计算机类","电子信息类","机械类","材料类","工商管理类"],"理工应用线，目标明确：把技能练到能吃饭。"],
+  ["4114010110","中北大学","山西省","太原市","public",150000,58,["工科试验班","机械类","电子信息类","计算机类","材料类"],"兵工底色工科卡，低调但很硬。"],
+  ["4114010125","山西财经大学","山西省","太原市","public",155000,57,["会计学","金融学类","经济学类","工商管理类","法学"],"财经务实线，太原风会把理想吹成预算表。"],
+  ["4111011418","北京城市学院","北京市教委","北京市","private",245000,50,["计算机类","工商管理类","设计学类","新闻传播学类","旅游管理类"],"北京民办副本，城市资源很近，学费现实也很近。"],
+  ["4131012799","上海建桥学院","上海市教委","上海市","private",255000,50,["计算机类","工商管理类","新闻传播学类","设计学类","电子商务"],"上海民办线，开局成本高但城市 buff 也高。"],
+  ["4161012712","西安欧亚学院","陕西省教育厅","西安市","private",320000,46,["工商管理类","会计学","数字媒体技术","电子商务","设计学类"],"民办运营感很强，适合把大学读成自我经营项目。"],
+  ["4142012309","武昌首义学院","湖北省教育厅","武汉市","private",285000,48,["计算机类","工商管理类","会计学","新闻传播学类","设计学类"],"武汉民办热门卡，名字自带历史开场白。"],
+  ["4142013262","文华学院","湖北省教育厅","武汉市","private",300000,47,["计算机类","电子信息类","工商管理类","新闻传播学类","设计学类"],"民办理工线，适合从普通副本打出操作感。"],
+  ["4142013666","武汉华夏理工学院","湖北省教育厅","武汉市","private",340000,44,["计算机类","机械类","电子信息类","工商管理类","设计学类"],"理工民办副本，技能树点满也能很能打。"],
+  ["4141013507","郑州工商学院","河南省教育厅","郑州市","private",430000,42,["工商管理类","会计学","计算机类","电子商务","设计学类"],"河南民办现实线，主打离家不远且能继续发育。"],
+  ["4136010846","江西科技学院","江西省教育厅","南昌市","private",455000,42,["计算机类","机械类","工商管理类","设计学类","护理学"],"民办科技线，人生从这里开始练实用技能。"],
+  ["4146013892","三亚学院","海南省教育厅","三亚市","private",480000,42,["旅游管理类","工商管理类","法学","设计学类","计算机类"],"海岛民办副本，风景很强，期末也很强。"],
+  ["4144012619","广州南方学院","广东省教育厅","广州市","private",310000,46,["工商管理类","会计学","计算机类","新闻传播学类","设计学类"],"大湾区民办线，实习机会和生活成本一起上线。"],
+  ["4144013684","珠海科技学院","广东省教育厅","珠海市","private",300000,47,["计算机类","工商管理类","金融学类","设计学类","电子商务"],"海边民办卡，校园滤镜适合发朋友圈。"],
+  ["4151013903","成都锦城学院","四川省教育厅","成都市","private",330000,45,["计算机类","工商管理类","会计学","新闻传播学类","设计学类"],"成都民办线，巴适和自律需要自己调配。"],
+  ["4122010964","吉林外国语大学","吉林省教育厅","长春市","private",360000,43,["外国语言文学类","新闻传播学类","工商管理类","电子商务","教育学类"],"语言民办副本，冬天很冷但口语不能冷场。"],
+  ["4144011113","深圳职业技术大学","广东省","深圳市","vocational",320000,58,["软件技术","电子信息类","智能制造工程技术","现代物流管理","电子商务"],"职教王牌线，深圳速度把技能点催熟。"],
+  ["4132010850","南京工业职业技术大学","江苏省","南京市","vocational",420000,52,["智能制造工程技术","机械类","电子信息类","软件技术","现代物流管理"],"职业本科硬技能卡，动手能力比嘴硬更重要。"],
+  ["4133012061","金华职业技术大学","浙江省","金华市","vocational",520000,50,["护理学","智能制造工程技术","电子商务","现代物流管理","学前教育"],"职教实用线，毕业故事多半和技能证书有关。"],
+  ["4144010833","广东轻工职业技术大学","广东省","广州市","vocational",560000,50,["食品科学与工程类","设计学类","电子商务","智能制造工程技术","现代物流管理"],"轻工职教卡，设计、食品、制造都能落到手上。"],
+  ["4141012058","黄河水利职业技术大学","河南省","开封市","vocational",700000,46,["水利类","工程造价","测绘工程技术","现代物流管理","计算机类"],"水利技能线，名字一出来就有工程现场感。"],
+  ["4143010827","长沙民政职业技术学院","湖南省","长沙市","vocational",820000,44,["现代物流管理","电子商务","护理学","学前教育","公共管理类"],"高职实用副本，长沙夜宵负责安慰所有不确定。"]
+];
+
+const schools = [...schoolTuples, ...extraSchoolTuples]
+  .filter((item, index, list) => list.findIndex((candidate) => candidate[0] === item[0]) === index)
+  .map(([code, name, admin, city, tier, baseRank, heat, majors, meme]) => ({ code, name, admin, city, tier, baseRank, heat, majors, meme }));
+
+const schoolMemeOverrides = {
+  "清华大学": "人类天花板服务器，录取后亲戚群自动静音。",
+  "北京大学": "未名湖边精神内耗，适合把人生问题讨论成哲学。",
+  "复旦大学": "沪上精英副本，发言像圆桌，ddl 像悬疑片。",
+  "上海交通大学": "工科强度和上海节奏叠满，适合硬核升级。",
+  "浙江大学": "大而全的航母卡，杭州滤镜和早八一起出现。",
+  "中国科学技术大学": "合肥科研修仙线，日常像和物理定律谈判。",
+  "南京大学": "低调王者卡，开口不大声但学术气压很高。",
+  "中国人民大学": "饭桌上最会解释规则的人生路线。",
+  "北京航空航天大学": "航天工科爽文，代码和飞机都很想上天。",
+  "哈尔滨工业大学": "硬核工科冰雪版，越冷越能卷。",
+  "武汉大学": "樱花、法学、测绘与早八，浪漫和现实一并投档。",
+  "华中科技大学": "同济医、电气、计算机轮番上阵，强度很有存在感。",
+  "中山大学": "岭南综合强卡，太阳很大，未来也很大。",
+  "北京邮电大学": "网线尽头的青春，毕业后路由器都显得亲切。",
+  "上海财经大学": "一入上财深似表，从此现金流入梦来。",
+  "中国政法大学": "吵架开始讲证据，朋友圈逐渐法条化。",
+  "西安电子科技大学": "电子信息大本营，信号比心动更稳定。",
+  "郑州大学": "河南大型梦想中转站，体量和期待都很大。",
+  "南京邮电大学": "通信人集合点，网速和绩点都想冲。",
+  "杭州电子科技大学": "杭州码农预告片，实习地图很容易亮起来。",
+  "深圳大学": "大湾区逆袭卡，城市 buff 强到像外挂。",
+  "南方科技大学": "年轻科研副本，开局就像实验班。",
+  "重庆邮电大学": "山城通信线，爬坡和写代码都练腿。",
+  "广东工业大学": "珠三角工科现实派，毕业路线很接地气。",
+  "河南大学": "开封老校，历史感和性价比一起上桌。",
+  "西南财经大学": "成都会计金融线，安逸外表下全是报表。",
+  "电子科技大学": "电子信息主城，代码、电路、火锅三线并发。",
+  "北京联合大学": "北京本地生活卡，普通但离机会很近。",
+  "成都大学": "成都城市副本，巴适和努力需要同时开。",
+  "天津财经大学": "财经务实线，报表气质从大一开始培养。"
+};
 
 let state = initialState();
 
@@ -224,6 +478,8 @@ function initialState() {
       province: "henan",
       track: "physics",
       ritual: "steady",
+      work: "overtime",
+      restart: "blindbox",
       family: "ordinary",
       personality: "steady",
       talent: "coding",
@@ -267,6 +523,72 @@ function noise(key, range = 1) {
   return (raw - Math.floor(raw)) * range;
 }
 
+function weightedBand(bands) {
+  const total = bands.reduce((sum, band) => sum + band[2], 0);
+  let roll = randomInt(1, total);
+  for (const band of bands) {
+    roll -= band[2];
+    if (roll <= 0) return band;
+  }
+  return bands[bands.length - 1];
+}
+
+function generateTotalScore() {
+  const c = state.candidate;
+  const province = provinces[c.province];
+  const track = tracks[c.track];
+  const ritual = rituals[c.ritual];
+  const work = currentWorks[c.work];
+  const restart = restarts[c.restart];
+  const family = families[c.family];
+  const personality = personalities[c.personality];
+  const talent = talents[c.talent];
+  const [min, max] = weightedBand(restart.bands);
+  const raw = randomInt(min, max);
+  const modifier = track.scoreBias + ritual.score + work.score + family.score + personality.score + talent.score - Math.round(province.pressure * .7);
+  return clamp(Math.round(raw + modifier + randomInt(-12, 12)), 150, 748);
+}
+
+function normalizeSubjects(values, total) {
+  const mins = [38, 25, 32, 55];
+  const maxes = [150, 150, 150, 300];
+  const scores = values.map((value, index) => clamp(Math.round(value), mins[index], maxes[index]));
+  let diff = total - scores.reduce((sum, value) => sum + value, 0);
+  let guard = 0;
+  while (diff !== 0 && guard < 900) {
+    const index = guard % scores.length;
+    if (diff > 0 && scores[index] < maxes[index]) {
+      scores[index] += 1;
+      diff -= 1;
+    } else if (diff < 0 && scores[index] > mins[index]) {
+      scores[index] -= 1;
+      diff += 1;
+    }
+    guard += 1;
+  }
+  return scores;
+}
+
+function generateSubjects(total) {
+  const c = state.candidate;
+  const ratio = total / 750;
+  const chinese = 150 * ratio + (c.track === "history" ? 8 : 0) + randomInt(-12, 12);
+  const math = 150 * ratio + (c.track === "physics" ? 10 : -4) + (c.talent === "math" ? 10 : 0) + randomInt(-18, 18);
+  const english = 150 * ratio + (c.talent === "writing" ? 6 : 0) + randomInt(-14, 14);
+  const rest = 300 * ratio + (c.track === "physics" ? 8 : 0) + randomInt(-24, 24);
+  return normalizeSubjects([chinese, math, english, rest], total);
+}
+
+function scoreDrama(score) {
+  if (score >= 700) return "天命之子";
+  if (score >= 650) return "学霸爽文";
+  if (score >= 580) return "亲戚群高亮";
+  if (score >= 500) return "认真填报有戏";
+  if (score >= 420) return "本科边缘拉扯";
+  if (score >= 300) return "技能路线开局";
+  return "剧情大反转";
+}
+
 function switchStep(step) {
   state.stage = step;
   els.scorePage.classList.toggle("active", step === "score");
@@ -292,10 +614,10 @@ function addFeed(name, text) {
 
 function scoreToRank(score) {
   const province = provinces[state.candidate.province];
-  const ratio = clamp((750 - score) / 340, .018, .98);
-  const shaped = Math.pow(ratio, 2.55);
-  const wobble = 1 + randomInt(-6, 7) / 100;
-  return Math.round(clamp(province.population * shaped * wobble, 80, province.population));
+  const ratio = clamp((750 - score) / 610, .002, .995);
+  const shaped = Math.pow(ratio, 2.25);
+  const wobble = 1 + randomInt(-8, 9) / 100;
+  return Math.round(clamp(province.population * shaped * wobble, 20, province.population));
 }
 
 function generateScore(event) {
@@ -305,23 +627,20 @@ function generateScore(event) {
   state.candidate.province = els.provinceSelect.value;
   state.candidate.track = els.trackSelect.value;
   state.candidate.ritual = els.ritualSelect.value;
+  state.candidate.work = els.workSelect.value;
+  state.candidate.restart = els.restartSelect.value;
   state.candidate.family = els.familySelect.value;
   state.candidate.personality = els.personalitySelect.value;
   state.candidate.talent = els.talentSelect.value;
 
-  const province = provinces[state.candidate.province];
-  const track = tracks[state.candidate.track];
   const ritual = rituals[state.candidate.ritual];
+  const work = currentWorks[state.candidate.work];
+  const restart = restarts[state.candidate.restart];
   const family = families[state.candidate.family];
   const personality = personalities[state.candidate.personality];
   const talent = talents[state.candidate.talent];
-  const base = 540 + track.scoreBias + ritual.score + family.score + personality.score + talent.score - province.pressure + randomInt(-45, 64);
-  const total = clamp(Math.round(base), 398, 704);
-  const chinese = clamp(Math.round(94 + (total - 520) * .13 + (state.candidate.track === "history" ? 7 : 0) + randomInt(-10, 13)), 68, 142);
-  const math = clamp(Math.round(92 + (total - 520) * .18 + (state.candidate.track === "physics" ? 8 : -3) + randomInt(-16, 18)), 45, 150);
-  const english = clamp(Math.round(90 + (total - 520) * .12 + randomInt(-12, 15)), 55, 145);
-  const rest = clamp(total - chinese - math - english, 90, 298);
-  const finalTotal = chinese + math + english + rest;
+  const finalTotal = generateTotalScore();
+  const [chinese, math, english, rest] = generateSubjects(finalTotal);
 
   state.candidate.score = finalTotal;
   state.candidate.rank = scoreToRank(finalTotal);
@@ -341,8 +660,9 @@ function generateScore(event) {
   renderSchools();
   renderMetrics();
   enableStep("apply");
-  addFeed("成绩查询", `${state.candidate.alias} 查到 ${finalTotal} 分，模拟位次 ${formatRank(state.candidate.rank)}。`);
+  addFeed("成绩查询", `${state.candidate.alias} 查到 ${finalTotal} 分，模拟位次 ${formatRank(state.candidate.rank)}，系统判定为「${scoreDrama(finalTotal)}」。`);
   addFeed("查分姿势", ritual.feed);
+  addFeed("重开剧本", `${work.name}选择了「${restart.name}」。${restart.feed}`);
   addFeed("人生变量", `${family.name}、${personality.name}、${talent.name} 已写入投档副本。`);
 }
 
@@ -353,6 +673,8 @@ function renderCandidate() {
   els.candidateName.textContent = c.alias;
   els.candidateProvince.textContent = c.score ? provinces[c.province].name : "待选择";
   els.candidateTrack.textContent = c.score ? tracks[c.track].name : "待选择";
+  els.candidateWork.textContent = c.score ? currentWorks[c.work].name : "待选择";
+  els.candidateRestart.textContent = c.score ? restarts[c.restart].name : "待选择";
   els.candidateFamily.textContent = c.score ? families[c.family].name : "待选择";
   els.candidatePersonality.textContent = c.score ? personalities[c.personality].name : "待选择";
   els.candidateTalent.textContent = c.score ? talents[c.talent].name : "待选择";
@@ -363,8 +685,8 @@ function renderCandidate() {
 function renderScoreReport() {
   const c = state.candidate;
   els.scoreReport.classList.remove("hidden");
-  els.scoreHeadline.textContent = `${c.alias}：${c.score} 分`;
-  els.scoreExplain.textContent = `${provinces[c.province].name} · ${tracks[c.track].name} · ${families[c.family].name} · ${personalities[c.personality].name} · ${talents[c.talent].name}。模拟位次 ${formatRank(c.rank)}，可以开始填报本科批平行志愿。`;
+  els.scoreHeadline.textContent = `${c.alias}：${c.score} 分 · ${scoreDrama(c.score)}`;
+  els.scoreExplain.textContent = `${provinces[c.province].name} · ${tracks[c.track].name} · ${currentWorks[c.work].name} · ${restarts[c.restart].name} · ${families[c.family].name} · ${personalities[c.personality].name} · ${talents[c.talent].name}。模拟位次 ${formatRank(c.rank)}，可以开始填报本/专科平行志愿。`;
   els.scoreTotal.textContent = c.score;
   els.subjectGrid.innerHTML = "";
   c.subjects.forEach(([name, score, desc]) => {
@@ -399,7 +721,21 @@ function riskOf(school) {
 function tierLabel(tier) {
   if (tier === "985") return "985";
   if (tier === "211") return "211/双一流";
+  if (tier === "private") return "民办本科";
+  if (tier === "vocational") return "职业本科/高职";
   return "普通本科";
+}
+
+function schoolMeme(school) {
+  if (!school) return "命运还在加载。";
+  if (school.meme) return school.meme;
+  if (schoolMemeOverrides[school.name]) return schoolMemeOverrides[school.name];
+  const major = school.majors[0] || "综合发展";
+  if (school.tier === "985") return `${school.city}${major}强卡，录取后人生自带名校滤镜。`;
+  if (school.tier === "211") return `${school.city}性价比高光卡，亲戚解释成本显著下降。`;
+  if (school.tier === "private") return `${school.city}民办副本，城市资源和学费现实一起上线。`;
+  if (school.tier === "vocational") return `${school.city}技能路线，主打把本事练到能立刻上手。`;
+  return `${school.city}${major}成长线，普通但有后期发育空间。`;
 }
 
 function preferredMajors() {
@@ -433,7 +769,7 @@ function renderApplication() {
       tr.innerHTML = `
         <td>${letter}</td>
         <td class="code">${school.code}</td>
-        <td><b>${school.name}</b><br><span class="tier tier-${school.tier}">${tierLabel(school.tier)}</span></td>
+        <td><b>${school.name}</b><br><span class="tier tier-${school.tier}">${tierLabel(school.tier)}</span><br><span class="school-meme-inline">${schoolMeme(school)}</span></td>
         <td>${school.city}</td>
         <td>${slot.major}<br><span class="code">专业线 ${formatRank(majorLine(school, slot.major))}</span></td>
         <td><span class="risk-badge risk-${risk.key}">${risk.label}</span><br><span class="code">${risk.text}</span></td>
@@ -465,7 +801,7 @@ function filteredSchools() {
     .sort((a, b) => schoolLine(a) - schoolLine(b))
     .filter((school) => {
       const risk = riskOf(school).key;
-      const text = `${school.name} ${school.city} ${school.admin} ${tierLabel(school.tier)}`.toLowerCase();
+      const text = `${school.name} ${school.city} ${school.admin} ${tierLabel(school.tier)} ${schoolMeme(school)} ${school.majors.join(" ")}`.toLowerCase();
       return (!query || text.includes(query))
         && (riskFilter === "all" || risk === riskFilter)
         && (tierFilter === "all" || school.tier === tierFilter || (tierFilter === "211" && school.tier === "211"));
@@ -484,6 +820,7 @@ function renderSchools() {
       <td>${school.city}</td>
       <td>${school.admin}</td>
       <td><span class="tier tier-${school.tier}">${tierLabel(school.tier)}</span></td>
+      <td class="school-meme">${schoolMeme(school)}</td>
       <td>${formatRank(schoolLine(school))}</td>
       <td><span class="risk-badge risk-${risk.key}">${risk.label}</span></td>
       <td>
@@ -592,7 +929,7 @@ function calculateMetrics() {
     rush += { dream: 94, rush: 76, stable: 42, safe: 18 }[risk];
     stable += { dream: 20, rush: 44, stable: 74, safe: 92 }[risk];
     fit += fitMajors.includes(slot.major) ? 92 : majorFactors[slot.major] < .9 ? 70 : 58;
-    parent += school.tier === "985" ? 8 : school.tier === "211" ? 6 : 2;
+    parent += school.tier === "985" ? 8 : school.tier === "211" ? 6 : school.tier === "private" ? 7 : school.tier === "vocational" ? -2 : 2;
     parent += slot.obey ? -3 : 8;
   });
   return {
@@ -618,47 +955,76 @@ function renderMetrics() {
 }
 
 function majorCareer(major) {
-  if (/计算机|人工智能|电子信息|自动化|通信|数字媒体|数学/.test(major)) return { field: "科技线", job: "算法/产品/研发工程师", scene: "毕业后在工位上把人生拆成需求、排期和线上事故，逐渐学会用咖啡和快捷键续命。" };
-  if (/临床医学/.test(major)) return { field: "医学线", job: "住院医师/医学研究员", scene: "毕业后进入医院时间流速异常区，朋友圈从旅行照变成值班表和白大褂。" };
+  if (/计算机|人工智能|电子信息|自动化|通信|数字媒体|数学|软件|光电|电气/.test(major)) return { field: "科技线", job: "算法/产品/研发工程师", scene: "毕业后在工位上把人生拆成需求、排期和线上事故，逐渐学会用咖啡和快捷键续命。" };
+  if (/临床医学|口腔|药学|护理|生物医药/.test(major)) return { field: "医学健康线", job: "住院医师/药企研究员/健康行业打工人", scene: "毕业后进入医院和生命科学时间流速异常区，朋友圈从旅行照变成值班表和白大褂。" };
   if (/法学/.test(major)) return { field: "法政线", job: "律师/法务/选调考公人", scene: "毕业后熟练使用“根据相关规定”，饭桌吵架开始自带法条索引。" };
-  if (/经济|金融/.test(major)) return { field: "金融线", job: "投研/审计/银行管培生", scene: "毕业后每天看盘、看表、看老板脸色，终于理解复利和黑眼圈都很可怕。" };
-  if (/新闻|汉语言|外国语/.test(major)) return { field: "表达线", job: "内容策划/编辑/公关", scene: "毕业后把所有突发事件写成标题，把所有人生转折包装成项目复盘。" };
-  if (/师范/.test(major)) return { field: "教育线", job: "中小学教师/教研员", scene: "毕业后成为讲台稳定输出装置，终于知道老师当年为什么总说再讲两分钟。" };
-  if (/工商|公共管理/.test(major)) return { field: "管理线", job: "运营/管培生/项目经理", scene: "毕业后在会议纪要里寻找人生意义，并掌握把任何问题拆成三点的技能。" };
-  if (/材料|环境|地质|机械|建筑|食品/.test(major)) return { field: "工科耐力线", job: "工程师/实验室研究员/转型产品经理", scene: "毕业后每天和样品、图纸、报告打交道，嘴上说不卷，手里已经开了第三个表格。" };
+  if (/经济|金融|会计|审计|统计/.test(major)) return { field: "财经线", job: "投研/审计/银行管培生/财务分析师", scene: "毕业后每天看盘、看表、看老板脸色，终于理解复利和黑眼圈都很可怕。" };
+  if (/新闻|汉语言|外国语|社会学/.test(major)) return { field: "表达线", job: "内容策划/编辑/公关/品牌传播", scene: "毕业后把所有突发事件写成标题，把所有人生转折包装成项目复盘。" };
+  if (/师范|心理|教育|学前/.test(major)) return { field: "教育线", job: "中小学教师/教研员/教育产品经理", scene: "毕业后成为讲台稳定输出装置，终于知道老师当年为什么总说再讲两分钟。" };
+  if (/工商|公共管理|电子商务|物流|旅游/.test(major)) return { field: "管理运营线", job: "运营/管培生/项目经理/本地生活操盘手", scene: "毕业后在会议纪要里寻找人生意义，并掌握把任何问题拆成三点的技能。" };
+  if (/材料|环境|地质|机械|建筑|食品|水利|交通|石油|土木|车辆|化工|安全|测绘|制造|工程造价|纺织|质量/.test(major)) return { field: "工科耐力线", job: "工程师/实验室研究员/技术项目经理", scene: "毕业后每天和样品、图纸、报告打交道，嘴上说不卷，手里已经开了第三个表格。" };
+  if (/设计|服装/.test(major)) return { field: "审美商业线", job: "品牌设计/视觉策划/产品运营", scene: "毕业后审美被甲方反复锻炼，终于学会把灵感压缩进预算和排期。" };
+  if (/农学|林学|海洋|生态|考古/.test(major)) return { field: "冷门宝藏线", job: "科研助理/行业研究员/博物馆与自然资源方向", scene: "毕业后发现冷门不是没人要，而是要耐心把故事讲给世界听。" };
   return { field: "综合发展线", job: talents[state.candidate.talent].career, scene: "毕业后成为复合型打工人，什么都会一点，什么都能接一下，像人形多功能接口。" };
 }
 
 function buildLifeOutcome(result) {
   const c = state.candidate;
+  const work = currentWorks[c.work];
+  const restart = restarts[c.restart];
   const family = families[c.family];
   const personality = personalities[c.personality];
   const talent = talents[c.talent];
   const career = majorCareer(result.major);
   const cityText = result.school.city && result.school.city !== "待定" ? result.school.city : "一座录取通知书决定的城市";
-  const tierText = result.school.tier === "985" ? "名校滤镜自动开启" : result.school.tier === "211" ? "亲戚解释成本显著下降" : "性价比路线开始发力";
+  const tierText = result.school.tier === "985"
+    ? "名校滤镜自动开启"
+    : result.school.tier === "211"
+      ? "亲戚解释成本显著下降"
+      : result.school.tier === "private"
+        ? "民办现实主义路线启动，学费和城市资源一起写进剧本"
+        : result.school.tier === "vocational"
+          ? "技能路线启动，命运不再只看分数"
+          : "性价比路线开始发力";
   const fateMap = {
     admit: "专业命中，人生副本进入主线剧情。",
     transfer: "调剂盲盒已开，系统提示：许多传奇都是从“也行吧”开始的。",
     reject: "退档触发，人生进入规则教育模式，下一轮会更懂招生章程。",
     slide: "滑档触发，征集志愿副本开启，主打一个剧情反转。"
   };
+  const programLevel = result.type === "admit" && c.score >= 680
+    ? "S+ 爽文回档"
+    : result.type === "transfer"
+      ? "A 调剂盲盒"
+      : result.type === "admit" && c.score <= 420
+        ? "S 低分有落点"
+        : result.type === "slide" || result.type === "reject"
+          ? "S 反转预告片"
+          : "A- 现实主义好结局";
+  const chapters = [
+    `18 岁：${scoreDrama(c.score)}，带着「${restart.name}」剧本抵达${cityText}，第一天就把宿舍、食堂和未来一起加入收藏。`,
+    `22 岁：从 ${result.major} 毕业，简历第一行写着 ${result.school.name}，第二行开始解释自己为什么很能扛事。`,
+    `28 岁：走向「${career.job}」路线，偶尔下班后想起当年的志愿表，发现那一页真的改写了很多东西。`
+  ];
   return {
-    profile: `${family.name}出身，${personality.name}，特长为${talent.name}`,
+    profile: `现世${work.name}，重开为${family.name}出身的${personality.name}，特长为${talent.name}`,
     route: `${cityText} · ${result.school.name} · ${result.major}`,
     career: career.job,
     field: career.field,
+    schoolMeme: schoolMeme(result.school),
     headline: `${result.major}毕业后，大概率走向「${career.job}」路线`,
-    future: `${fateMap[result.type]} ${tierText}。${family.copy}${personality.copy}${talent.copy}${career.scene}`,
-    program: `节目效果评级：${result.type === "transfer" ? "调剂盲盒有剪辑点" : result.type === "admit" ? "正片爽文但仍需早八" : "反转强，适合下集预告"}。`
+    future: `${work.twist}${fateMap[result.type]} ${tierText}。${family.copy}${personality.copy}${talent.copy}${career.scene}`,
+    chapters,
+    program: `节目效果评级：${programLevel}。`
   };
 }
 
 function startCeremony() {
   const c = state.candidate;
   const steps = [
-    `校验考生画像：${families[c.family].name} / ${personalities[c.personality].name} / ${talents[c.talent].name}`,
-    "读取 A-F 志愿表：冲稳保梯度进入系统队列",
+    `校验现世身份：${currentWorks[c.work].name}申请人生重开`,
+    `读取重开变量：${restarts[c.restart].name} / ${families[c.family].name} / ${personalities[c.personality].name} / ${talents[c.talent].name}`,
+    "读取 A-F 志愿表：冲稳保、民办、职教路线进入系统队列",
     "执行一轮投档：后续志愿正在屏息等待",
     "生成毕业去向：十年后人生副本开始排队"
   ];
@@ -693,7 +1059,7 @@ function startCeremony() {
 function simulateAdmission() {
   const timeline = [];
   let result = null;
-  timeline.push(["系统", `开始本科批平行志愿模拟投档。模拟位次 ${formatRank(state.candidate.rank)}，一轮投档。`]);
+  timeline.push(["系统", `开始本/专科批平行志愿模拟投档。模拟位次 ${formatRank(state.candidate.rank)}，一轮投档。`]);
   for (let i = 0; i < state.slots.length; i += 1) {
     const slot = state.slots[i];
     const letter = String.fromCharCode(65 + i);
@@ -765,7 +1131,7 @@ function simulateAdmission() {
 
 function buildShareText() {
   const r = state.result;
-  state.shareText = `我在高考志愿填报模拟器查到 ${state.candidate.score} 分，模拟位次 ${formatRank(state.candidate.rank)}。\n初始条件：${r.life.profile}\n录取结果：${r.title}\n院校专业：${r.school.name} · ${r.major}\n毕业走向：${r.life.career}\n${r.life.program}\n纯娱乐模拟，不代表真实志愿填报建议。`;
+  state.shareText = `我在高考志愿填报模拟器重开了一次高考：${state.candidate.score} 分（${scoreDrama(state.candidate.score)}），模拟位次 ${formatRank(state.candidate.rank)}。\n初始条件：${r.life.profile}\n录取结果：${r.title}\n院校专业：${r.school.name} · ${r.major}\n院校梗：${r.life.schoolMeme}\n毕业走向：${r.life.career}\n28岁剧情：${r.life.chapters[2]}\n${r.life.program}\n纯娱乐模拟，不代表真实志愿填报建议。`;
 }
 
 function renderResult() {
@@ -777,6 +1143,7 @@ function renderResult() {
   [
     ["总分", state.candidate.score],
     ["模拟位次", formatRank(state.candidate.rank)],
+    ["分数剧本", scoreDrama(state.candidate.score)],
     ["投档志愿", r.letter],
     ["院校代码", r.school.code],
     ["录取专业", r.major],
@@ -792,9 +1159,13 @@ function renderResult() {
     <dl>
       <div><dt>初始条件</dt><dd>${r.life.profile}</dd></div>
       <div><dt>人生路线</dt><dd>${r.life.route}</dd></div>
+      <div><dt>院校梗</dt><dd>${r.life.schoolMeme}</dd></div>
       <div><dt>职业倾向</dt><dd>${r.life.field} · ${r.life.career}</dd></div>
       <div><dt>节目效果</dt><dd>${r.life.program}</dd></div>
     </dl>
+    <ol class="life-chapters">
+      ${r.life.chapters.map((chapter) => `<li>${chapter}</li>`).join("")}
+    </ol>
     <p>${r.life.future}</p>
   `;
   els.processList.innerHTML = "";
@@ -840,20 +1211,23 @@ function drawPoster() {
   wrapText(ctx, `${r.school.name} · ${r.major}`, 104, 402, 700, 38);
   ctx.fillStyle = "#5d6878";
   ctx.font = "700 22px PingFang SC, Microsoft YaHei, sans-serif";
-  ctx.fillText(`${state.candidate.alias} · ${state.candidate.score} 分 · 位次 ${formatRank(state.candidate.rank)}`, 104, 488);
+  ctx.fillText(`${state.candidate.alias} · ${state.candidate.score} 分 · ${scoreDrama(state.candidate.score)} · 位次 ${formatRank(state.candidate.rank)}`, 104, 488);
   ctx.font = "700 19px PingFang SC, Microsoft YaHei, sans-serif";
   wrapText(ctx, `初始条件：${r.life.profile}`, 104, 522, 700, 26);
   ctx.fillStyle = "#123b73";
   ctx.font = "800 21px PingFang SC, Microsoft YaHei, sans-serif";
   wrapText(ctx, `毕业走向：${r.life.headline}`, 104, 560, 700, 28);
+  ctx.fillStyle = "#5d6878";
+  ctx.font = "700 18px PingFang SC, Microsoft YaHei, sans-serif";
+  wrapText(ctx, `院校梗：${r.life.schoolMeme}`, 104, 600, 700, 24);
 
   ctx.fillStyle = "#172033";
   ctx.font = "900 30px PingFang SC, Microsoft YaHei, sans-serif";
-  ctx.fillText("志愿表", 64, 632);
+  ctx.fillText("志愿表", 64, 660);
   ctx.font = "700 20px PingFang SC, Microsoft YaHei, sans-serif";
   state.slots.forEach((slot, i) => {
     const x = i % 2 === 0 ? 64 : 462;
-    const y = 664 + Math.floor(i / 2) * 72;
+    const y = 692 + Math.floor(i / 2) * 72;
     ctx.fillStyle = "#ffffff";
     roundRect(ctx, x, y, 350, 54, 12);
     ctx.fill();
@@ -953,6 +1327,8 @@ function resetGame() {
   els.provinceSelect.value = "henan";
   els.trackSelect.value = "physics";
   els.ritualSelect.value = "steady";
+  els.workSelect.value = "overtime";
+  els.restartSelect.value = "blindbox";
   els.familySelect.value = "ordinary";
   els.personalitySelect.value = "steady";
   els.talentSelect.value = "coding";

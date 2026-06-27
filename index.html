@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>普通高校招生网上志愿填报系统 · 娱乐模拟版</title>
-  <meta name="description" content="真实高校名称 + 平行志愿规则的高考志愿填报娱乐模拟器。查分、填志愿、看录取结果。">
+  <title>普通高校招生网上志愿填报系统 · 人生重开娱乐模拟版</title>
+  <meta name="description" content="面向曾经高考考生的志愿填报人生重开小游戏。查分、填志愿、看录取，再生成另一种人生。">
   <meta property="og:title" content="高考志愿填报模拟器">
   <meta property="og:description" content="真实学校，全真流程，娱乐参数。看看你会被哪所大学录取。">
   <link rel="stylesheet" href="styles.css">
@@ -15,7 +15,7 @@
       <div class="gov-emblem" aria-hidden="true">招</div>
       <div>
         <p>普通高校招生网上志愿填报系统</p>
-        <h1>娱乐模拟版</h1>
+        <h1>人生重开娱乐模拟版</h1>
       </div>
       <div class="header-actions">
         <button id="resetBtn" type="button">重新登录</button>
@@ -25,7 +25,7 @@
 
     <section class="notice-bar">
       <strong>系统公告</strong>
-      <span>本页面使用真实高校名称与教育部学校标识码，但投档线、位次、专业录取均为娱乐模拟参数，不构成真实志愿填报建议。</span>
+      <span>本页面使用真实高校名称与教育部学校标识码，但投档线、位次、专业录取和人生走向均为娱乐模拟参数，不构成真实志愿填报建议。</span>
     </section>
 
     <nav class="step-nav" aria-label="填报步骤">
@@ -35,7 +35,7 @@
       </button>
       <button class="step" data-step="apply" type="button" disabled>
         <span>02</span>
-        <b>本科批志愿填报</b>
+        <b>本/专科志愿填报</b>
       </button>
       <button class="step" data-step="result" type="button" disabled>
         <span>03</span>
@@ -55,6 +55,8 @@
             <div><dt>姓名</dt><dd id="candidateName">查分同学</dd></div>
             <div><dt>省份</dt><dd id="candidateProvince">待选择</dd></div>
             <div><dt>科类</dt><dd id="candidateTrack">待选择</dd></div>
+            <div><dt>现世</dt><dd id="candidateWork">待选择</dd></div>
+            <div><dt>重开</dt><dd id="candidateRestart">待选择</dd></div>
             <div><dt>家庭</dt><dd id="candidateFamily">待选择</dd></div>
             <div><dt>性格</dt><dd id="candidatePersonality">待选择</dd></div>
             <div><dt>特长</dt><dd id="candidateTalent">待选择</dd></div>
@@ -88,8 +90,8 @@
           <section class="query-card">
             <div class="query-copy">
               <p class="section-label">成绩查询入口</p>
-              <h2>请核对考生信息后查询成绩</h2>
-              <p>模拟分数会按省份、科类和查分姿势生成，并换算为模拟位次。后续投档完全基于这个位次运行。</p>
+              <h2>下班后，重新登录一次高考人生</h2>
+              <p>模拟分数会按省份、科类、现世身份和重开剧本生成，并换算为模拟位次。后续投档完全基于这个位次运行。</p>
             </div>
             <form id="scoreForm" class="query-form">
               <label>
@@ -120,6 +122,27 @@
                   <option value="koi">转发锦鲤，截图留念</option>
                   <option value="family">全家围观，客厅屏息</option>
                   <option value="f5">F5 连点，服务器求饶</option>
+                </select>
+              </label>
+              <label>
+                <span>现世身份</span>
+                <select id="workSelect">
+                  <option value="overtime">互联网加班中：需求又改了</option>
+                  <option value="office">办公室材料人：表格永远不空</option>
+                  <option value="finance">金融/咨询做表中：PPT 比命硬</option>
+                  <option value="sales">销售/运营跑动中：嘴上说马上到</option>
+                  <option value="freelance">自由职业试炼中：甲方也是天气</option>
+                  <option value="teacher">上岸后讲题中：终于变成当年老师</option>
+                </select>
+              </label>
+              <label>
+                <span>重开剧本</span>
+                <select id="restartSelect">
+                  <option value="blindbox">命运盲盒：从 200 到 730 都可能</option>
+                  <option value="elite">学霸爽文：让亲戚安静三天</option>
+                  <option value="normal">普通发挥：最像真实人生</option>
+                  <option value="meltdown">考场断片：笔在写，魂在飞</option>
+                  <option value="chaos">逆天改命：大起大落剪辑版</option>
                 </select>
               </label>
               <label>
@@ -176,9 +199,9 @@
         <section id="applyPage" class="page">
           <section class="toolbar-card">
             <div>
-              <p class="section-label">本科批 · 平行志愿</p>
+              <p class="section-label">本/专科批 · 平行志愿</p>
               <h2>志愿表</h2>
-              <p id="applyHint">按 A-F 顺序检索，投档成功后后续志愿不再检索。请设置冲稳保梯度并慎重选择是否服从调剂。</p>
+              <p id="applyHint">按 A-F 顺序检索，投档成功后后续志愿不再检索。请设置冲稳保梯度，并慎重选择是否服从调剂。</p>
             </div>
             <div class="toolbar-actions">
               <button id="balancedBtn" type="button">智能冲稳保</button>
@@ -230,6 +253,8 @@
                   <option value="985">985</option>
                   <option value="211">211 / 双一流</option>
                   <option value="public">普通本科</option>
+                  <option value="private">民办本科</option>
+                  <option value="vocational">职业本科 / 高职</option>
                 </select>
               </div>
             </div>
@@ -242,6 +267,7 @@
                     <th>所在地</th>
                     <th>主管部门</th>
                     <th>层次</th>
+                    <th>院校梗</th>
                     <th>模拟投档位次</th>
                     <th>风险</th>
                     <th>专业方向</th>
