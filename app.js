@@ -13,6 +13,9 @@ const els = {
   provinceSelect: $("#provinceSelect"),
   trackSelect: $("#trackSelect"),
   ritualSelect: $("#ritualSelect"),
+  familySelect: $("#familySelect"),
+  personalitySelect: $("#personalitySelect"),
+  talentSelect: $("#talentSelect"),
   scoreReport: $("#scoreReport"),
   scoreHeadline: $("#scoreHeadline"),
   scoreExplain: $("#scoreExplain"),
@@ -24,6 +27,9 @@ const els = {
   candidateName: $("#candidateName"),
   candidateProvince: $("#candidateProvince"),
   candidateTrack: $("#candidateTrack"),
+  candidateFamily: $("#candidateFamily"),
+  candidatePersonality: $("#candidatePersonality"),
+  candidateTalent: $("#candidateTalent"),
   candidateScore: $("#candidateScore"),
   candidateRank: $("#candidateRank"),
   rushMeter: $("#rushMeter"),
@@ -55,7 +61,13 @@ const els = {
   downloadBtn: $("#downloadBtn"),
   posterCanvas: $("#posterCanvas"),
   processList: $("#processList"),
-  processCount: $("#processCount")
+  processCount: $("#processCount"),
+  ceremonyCard: $("#ceremonyCard"),
+  ceremonyTitle: $("#ceremonyTitle"),
+  ceremonyCopy: $("#ceremonyCopy"),
+  ceremonySteps: $("#ceremonySteps"),
+  resultCard: $("#resultCard"),
+  lifeForecast: $("#lifeForecast")
 };
 
 const provinces = {
@@ -76,6 +88,32 @@ const rituals = {
   koi: { name: "转发锦鲤，截图留念", score: 8, feed: "锦鲤可以拜，招生章程还是要读。" },
   family: { name: "全家围观，客厅屏息", score: 2, feed: "妈妈说不看，但已经把总分读完了。" },
   f5: { name: "F5 连点，服务器求饶", score: -10, feed: "服务器没有崩，但你的心态先排队了。" }
+};
+
+const families = {
+  ordinary: { name: "普通工薪家庭", score: 0, parent: 42, stable: 8, ambition: 0, copy: "家里口径统一：学校别太远，专业别太虚。" },
+  teacher: { name: "教师家庭", score: 6, parent: 58, stable: 12, ambition: -4, copy: "招生章程会被逐字审判，标点符号都不能幸免。" },
+  county: { name: "县城做题家家庭", score: 10, parent: 64, stable: 4, ambition: 8, copy: "位次就是家谱，亲戚已经开始刷新录取群。" },
+  business: { name: "小生意家庭", score: -2, parent: 50, stable: 0, ambition: 6, copy: "先问这个专业能不能吃饭，再问这个大学好不好听。" },
+  free: { name: "散养式家庭", score: -4, parent: 25, stable: -6, ambition: 8, copy: "嘴上说你开心就好，实际也会偷偷查宿舍空调。" }
+};
+
+const personalities = {
+  steady: { name: "稳健型", score: 4, rush: -10, fit: 6, parent: -8, majors: ["师范类", "临床医学", "法学", "工商管理类"], copy: "人生不爱开盲盒，按钮按下前会先保存截图。" },
+  ambitious: { name: "上头型", score: 2, rush: 16, fit: -2, parent: 10, majors: ["计算机类", "人工智能", "金融学类", "法学"], copy: "梦校不冲等于没填，心率可以当第二志愿。" },
+  social: { name: "社牛型", score: -1, rush: 2, fit: 8, parent: 0, majors: ["新闻传播学类", "工商管理类", "法学", "经济学类"], copy: "开学三天认识半个学院，第四天开始建群。" },
+  introvert: { name: "内耗型", score: 3, rush: -6, fit: 8, parent: -2, majors: ["计算机类", "数学类", "汉语言文学", "师范类"], copy: "每个按钮都要心理建设，但一旦确定就很能熬。" },
+  creative: { name: "发散型", score: -2, rush: 8, fit: 12, parent: 6, majors: ["新闻传播学类", "数字媒体技术", "汉语言文学", "人工智能"], copy: "专业可以冷门，人生必须有梗，PPT 永远比别人多一页。" }
+};
+
+const talents = {
+  coding: { name: "信息竞赛/写代码", score: 10, majors: ["计算机类", "人工智能", "电子信息类", "自动化类"], career: "算法工程师", copy: "会把人生问题抽象成输入输出，但经常忘记吃饭。" },
+  writing: { name: "作文常年被朗读", score: 6, majors: ["汉语言文学", "新闻传播学类", "法学", "师范类"], career: "内容策划", copy: "能把退档写成散文，把调剂写成命运共同体。" },
+  math: { name: "数学压轴题爱好者", score: 9, majors: ["数学类", "人工智能", "金融学类", "计算机类"], career: "量化研究员", copy: "喜欢确定性，但人生偏偏喜欢给你随机扰动。" },
+  debate: { name: "辩论队/嘴比笔快", score: 4, majors: ["法学", "新闻传播学类", "公共管理类", "经济学类"], career: "律师/合规专员", copy: "能把爸妈血压辩成家庭协商结果。" },
+  art: { name: "审美在线/会做海报", score: 0, majors: ["新闻传播学类", "数字媒体技术", "建筑类", "工商管理类"], career: "品牌设计/产品运营", copy: "志愿表也要对齐，录取通知书必须拍九宫格。" },
+  sports: { name: "体育生心态/抗压强", score: -1, majors: ["临床医学", "师范类", "工商管理类", "公共管理类"], career: "项目经理", copy: "被调剂也能先热身，主打一个不破防。" },
+  none: { name: "暂无明显特长但很会熬夜", score: -3, majors: ["工商管理类", "公共管理类", "材料类", "环境科学与工程类"], career: "综合型打工人", copy: "特长不明显，但续航惊人，适合所有需要扛事的岗位。" }
 };
 
 const majorFactors = {
@@ -186,6 +224,9 @@ function initialState() {
       province: "henan",
       track: "physics",
       ritual: "steady",
+      family: "ordinary",
+      personality: "steady",
+      talent: "coding",
       score: null,
       rank: null,
       subjects: []
@@ -264,11 +305,17 @@ function generateScore(event) {
   state.candidate.province = els.provinceSelect.value;
   state.candidate.track = els.trackSelect.value;
   state.candidate.ritual = els.ritualSelect.value;
+  state.candidate.family = els.familySelect.value;
+  state.candidate.personality = els.personalitySelect.value;
+  state.candidate.talent = els.talentSelect.value;
 
   const province = provinces[state.candidate.province];
   const track = tracks[state.candidate.track];
   const ritual = rituals[state.candidate.ritual];
-  const base = 540 + track.scoreBias + ritual.score - province.pressure + randomInt(-45, 64);
+  const family = families[state.candidate.family];
+  const personality = personalities[state.candidate.personality];
+  const talent = talents[state.candidate.talent];
+  const base = 540 + track.scoreBias + ritual.score + family.score + personality.score + talent.score - province.pressure + randomInt(-45, 64);
   const total = clamp(Math.round(base), 398, 704);
   const chinese = clamp(Math.round(94 + (total - 520) * .13 + (state.candidate.track === "history" ? 7 : 0) + randomInt(-10, 13)), 68, 142);
   const math = clamp(Math.round(92 + (total - 520) * .18 + (state.candidate.track === "physics" ? 8 : -3) + randomInt(-16, 18)), 45, 150);
@@ -296,6 +343,7 @@ function generateScore(event) {
   enableStep("apply");
   addFeed("成绩查询", `${state.candidate.alias} 查到 ${finalTotal} 分，模拟位次 ${formatRank(state.candidate.rank)}。`);
   addFeed("查分姿势", ritual.feed);
+  addFeed("人生变量", `${family.name}、${personality.name}、${talent.name} 已写入投档副本。`);
 }
 
 function renderCandidate() {
@@ -305,6 +353,9 @@ function renderCandidate() {
   els.candidateName.textContent = c.alias;
   els.candidateProvince.textContent = c.score ? provinces[c.province].name : "待选择";
   els.candidateTrack.textContent = c.score ? tracks[c.track].name : "待选择";
+  els.candidateFamily.textContent = c.score ? families[c.family].name : "待选择";
+  els.candidatePersonality.textContent = c.score ? personalities[c.personality].name : "待选择";
+  els.candidateTalent.textContent = c.score ? talents[c.talent].name : "待选择";
   els.candidateScore.textContent = c.score || "--";
   els.candidateRank.textContent = formatRank(c.rank);
 }
@@ -313,7 +364,7 @@ function renderScoreReport() {
   const c = state.candidate;
   els.scoreReport.classList.remove("hidden");
   els.scoreHeadline.textContent = `${c.alias}：${c.score} 分`;
-  els.scoreExplain.textContent = `${provinces[c.province].name} · ${tracks[c.track].name} · 模拟位次 ${formatRank(c.rank)}。可以开始填报本科批平行志愿。`;
+  els.scoreExplain.textContent = `${provinces[c.province].name} · ${tracks[c.track].name} · ${families[c.family].name} · ${personalities[c.personality].name} · ${talents[c.talent].name}。模拟位次 ${formatRank(c.rank)}，可以开始填报本科批平行志愿。`;
   els.scoreTotal.textContent = c.score;
   els.subjectGrid.innerHTML = "";
   c.subjects.forEach(([name, score, desc]) => {
@@ -349,6 +400,15 @@ function tierLabel(tier) {
   if (tier === "985") return "985";
   if (tier === "211") return "211/双一流";
   return "普通本科";
+}
+
+function preferredMajors() {
+  const c = state.candidate;
+  return [
+    ...tracks[c.track].majorFit,
+    ...personalities[c.personality].majors,
+    ...talents[c.talent].majors
+  ];
 }
 
 function renderApplication() {
@@ -497,7 +557,7 @@ function autoFill(mode) {
     .forEach((school) => {
       if (unique.length < 6 && !unique.some((item) => item.code === school.code)) unique.push(school);
     });
-  const fitMajors = tracks[state.candidate.track].majorFit;
+  const fitMajors = preferredMajors();
   state.slots = Array.from({ length: 6 }, (_, index) => {
     const school = unique[index];
     if (!school) return null;
@@ -522,7 +582,10 @@ function calculateMetrics() {
   let stable = 0;
   let fit = 0;
   let parent = 20;
-  const fitMajors = tracks[state.candidate.track].majorFit;
+  const fitMajors = preferredMajors();
+  const family = families[state.candidate.family];
+  const personality = personalities[state.candidate.personality];
+  const talent = talents[state.candidate.talent];
   filled.forEach((slot) => {
     const school = schools.find((item) => item.code === slot.code);
     const risk = riskOf(school).key;
@@ -533,10 +596,10 @@ function calculateMetrics() {
     parent += slot.obey ? -3 : 8;
   });
   return {
-    rush: clamp(Math.round(rush / filled.length), 0, 100),
-    stable: clamp(Math.round(stable / filled.length), 0, 100),
-    fit: clamp(Math.round(fit / filled.length), 0, 100),
-    parent: clamp(Math.round(parent), 0, 100)
+    rush: clamp(Math.round(rush / filled.length + personality.rush + family.ambition), 0, 100),
+    stable: clamp(Math.round(stable / filled.length + family.stable), 0, 100),
+    fit: clamp(Math.round(fit / filled.length + personality.fit + (fitMajors.includes(talent.majors[0]) ? 3 : 0)), 0, 100),
+    parent: clamp(Math.round(parent + family.parent / 2 + personality.parent), 0, 100)
   };
 }
 
@@ -552,6 +615,79 @@ function renderMetrics() {
     bar.style.width = `${value}%`;
     valueEl.textContent = value;
   });
+}
+
+function majorCareer(major) {
+  if (/计算机|人工智能|电子信息|自动化|通信|数字媒体|数学/.test(major)) return { field: "科技线", job: "算法/产品/研发工程师", scene: "毕业后在工位上把人生拆成需求、排期和线上事故，逐渐学会用咖啡和快捷键续命。" };
+  if (/临床医学/.test(major)) return { field: "医学线", job: "住院医师/医学研究员", scene: "毕业后进入医院时间流速异常区，朋友圈从旅行照变成值班表和白大褂。" };
+  if (/法学/.test(major)) return { field: "法政线", job: "律师/法务/选调考公人", scene: "毕业后熟练使用“根据相关规定”，饭桌吵架开始自带法条索引。" };
+  if (/经济|金融/.test(major)) return { field: "金融线", job: "投研/审计/银行管培生", scene: "毕业后每天看盘、看表、看老板脸色，终于理解复利和黑眼圈都很可怕。" };
+  if (/新闻|汉语言|外国语/.test(major)) return { field: "表达线", job: "内容策划/编辑/公关", scene: "毕业后把所有突发事件写成标题，把所有人生转折包装成项目复盘。" };
+  if (/师范/.test(major)) return { field: "教育线", job: "中小学教师/教研员", scene: "毕业后成为讲台稳定输出装置，终于知道老师当年为什么总说再讲两分钟。" };
+  if (/工商|公共管理/.test(major)) return { field: "管理线", job: "运营/管培生/项目经理", scene: "毕业后在会议纪要里寻找人生意义，并掌握把任何问题拆成三点的技能。" };
+  if (/材料|环境|地质|机械|建筑|食品/.test(major)) return { field: "工科耐力线", job: "工程师/实验室研究员/转型产品经理", scene: "毕业后每天和样品、图纸、报告打交道，嘴上说不卷，手里已经开了第三个表格。" };
+  return { field: "综合发展线", job: talents[state.candidate.talent].career, scene: "毕业后成为复合型打工人，什么都会一点，什么都能接一下，像人形多功能接口。" };
+}
+
+function buildLifeOutcome(result) {
+  const c = state.candidate;
+  const family = families[c.family];
+  const personality = personalities[c.personality];
+  const talent = talents[c.talent];
+  const career = majorCareer(result.major);
+  const cityText = result.school.city && result.school.city !== "待定" ? result.school.city : "一座录取通知书决定的城市";
+  const tierText = result.school.tier === "985" ? "名校滤镜自动开启" : result.school.tier === "211" ? "亲戚解释成本显著下降" : "性价比路线开始发力";
+  const fateMap = {
+    admit: "专业命中，人生副本进入主线剧情。",
+    transfer: "调剂盲盒已开，系统提示：许多传奇都是从“也行吧”开始的。",
+    reject: "退档触发，人生进入规则教育模式，下一轮会更懂招生章程。",
+    slide: "滑档触发，征集志愿副本开启，主打一个剧情反转。"
+  };
+  return {
+    profile: `${family.name}出身，${personality.name}，特长为${talent.name}`,
+    route: `${cityText} · ${result.school.name} · ${result.major}`,
+    career: career.job,
+    field: career.field,
+    headline: `${result.major}毕业后，大概率走向「${career.job}」路线`,
+    future: `${fateMap[result.type]} ${tierText}。${family.copy}${personality.copy}${talent.copy}${career.scene}`,
+    program: `节目效果评级：${result.type === "transfer" ? "调剂盲盒有剪辑点" : result.type === "admit" ? "正片爽文但仍需早八" : "反转强，适合下集预告"}。`
+  };
+}
+
+function startCeremony() {
+  const c = state.candidate;
+  const steps = [
+    `校验考生画像：${families[c.family].name} / ${personalities[c.personality].name} / ${talents[c.talent].name}`,
+    "读取 A-F 志愿表：冲稳保梯度进入系统队列",
+    "执行一轮投档：后续志愿正在屏息等待",
+    "生成毕业去向：十年后人生副本开始排队"
+  ];
+  els.ceremonyCard.classList.remove("hidden");
+  els.resultCard.classList.add("hidden");
+  els.ceremonyTitle.textContent = "正在执行模拟投档";
+  els.ceremonyCopy.textContent = "系统正在以非常正式的口吻，处理一份非常像命运的表格。";
+  els.ceremonySteps.innerHTML = steps.map((step, index) => `<li class="${index === 0 ? "active" : ""}">${step}</li>`).join("");
+
+  const items = [...els.ceremonySteps.querySelectorAll("li")];
+  items.forEach((item, index) => {
+    setTimeout(() => {
+      items.forEach((node, nodeIndex) => {
+        node.classList.toggle("active", nodeIndex === index);
+        if (nodeIndex < index) node.classList.add("done");
+      });
+      els.ceremonyTitle.textContent = index < items.length - 1 ? "投档处理中" : "录取结果生成中";
+      els.ceremonyCopy.textContent = steps[index];
+    }, 520 * index);
+  });
+  setTimeout(() => {
+    items.forEach((item) => {
+      item.classList.remove("active");
+      item.classList.add("done");
+    });
+    els.ceremonyTitle.textContent = "投档完成";
+    els.ceremonyCopy.textContent = "系统已生成录取结果和毕业后人生预测，正式程度仅供娱乐。";
+    renderResult();
+  }, 520 * steps.length + 280);
 }
 
 function simulateAdmission() {
@@ -618,20 +754,23 @@ function simulateAdmission() {
     };
     timeline.push(["滑档", "A-F 均未投出，征集志愿副本已解锁。"]);
   }
-  state.result = { ...result, timeline, metrics: calculateMetrics() };
+  const nextResult = { ...result, timeline, metrics: calculateMetrics() };
+  nextResult.life = buildLifeOutcome(nextResult);
+  state.result = nextResult;
   buildShareText();
-  renderResult();
   enableStep("result");
   switchStep("result");
+  startCeremony();
 }
 
 function buildShareText() {
   const r = state.result;
-  state.shareText = `我在高考志愿填报模拟器查到 ${state.candidate.score} 分，模拟位次 ${formatRank(state.candidate.rank)}。\n录取结果：${r.title}\n院校：${r.school.name}\n专业：${r.major}\n纯娱乐模拟，不代表真实志愿填报建议。`;
+  state.shareText = `我在高考志愿填报模拟器查到 ${state.candidate.score} 分，模拟位次 ${formatRank(state.candidate.rank)}。\n初始条件：${r.life.profile}\n录取结果：${r.title}\n院校专业：${r.school.name} · ${r.major}\n毕业走向：${r.life.career}\n${r.life.program}\n纯娱乐模拟，不代表真实志愿填报建议。`;
 }
 
 function renderResult() {
   const r = state.result;
+  els.resultCard.classList.remove("hidden");
   els.resultTitle.textContent = r.title;
   els.resultSummary.textContent = r.summary;
   els.resultStats.innerHTML = "";
@@ -641,13 +780,23 @@ function renderResult() {
     ["投档志愿", r.letter],
     ["院校代码", r.school.code],
     ["录取专业", r.major],
-    ["稳妥值", r.metrics.stable]
+    ["毕业走向", r.life.career]
   ].forEach(([label, value]) => {
     const div = document.createElement("div");
     div.className = "result-stat";
     div.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
     els.resultStats.appendChild(div);
   });
+  els.lifeForecast.innerHTML = `
+    <h3>毕业后人生预测</h3>
+    <dl>
+      <div><dt>初始条件</dt><dd>${r.life.profile}</dd></div>
+      <div><dt>人生路线</dt><dd>${r.life.route}</dd></div>
+      <div><dt>职业倾向</dt><dd>${r.life.field} · ${r.life.career}</dd></div>
+      <div><dt>节目效果</dt><dd>${r.life.program}</dd></div>
+    </dl>
+    <p>${r.life.future}</p>
+  `;
   els.processList.innerHTML = "";
   r.timeline.forEach(([name, text]) => {
     const li = document.createElement("li");
@@ -692,14 +841,19 @@ function drawPoster() {
   ctx.fillStyle = "#5d6878";
   ctx.font = "700 22px PingFang SC, Microsoft YaHei, sans-serif";
   ctx.fillText(`${state.candidate.alias} · ${state.candidate.score} 分 · 位次 ${formatRank(state.candidate.rank)}`, 104, 488);
+  ctx.font = "700 19px PingFang SC, Microsoft YaHei, sans-serif";
+  wrapText(ctx, `初始条件：${r.life.profile}`, 104, 522, 700, 26);
+  ctx.fillStyle = "#123b73";
+  ctx.font = "800 21px PingFang SC, Microsoft YaHei, sans-serif";
+  wrapText(ctx, `毕业走向：${r.life.headline}`, 104, 560, 700, 28);
 
   ctx.fillStyle = "#172033";
   ctx.font = "900 30px PingFang SC, Microsoft YaHei, sans-serif";
-  ctx.fillText("志愿表", 64, 610);
+  ctx.fillText("志愿表", 64, 632);
   ctx.font = "700 20px PingFang SC, Microsoft YaHei, sans-serif";
   state.slots.forEach((slot, i) => {
     const x = i % 2 === 0 ? 64 : 462;
-    const y = 642 + Math.floor(i / 2) * 78;
+    const y = 664 + Math.floor(i / 2) * 72;
     ctx.fillStyle = "#ffffff";
     roundRect(ctx, x, y, 350, 54, 12);
     ctx.fill();
@@ -721,7 +875,7 @@ function drawPoster() {
 
   const metrics = [["冲刺", r.metrics.rush, "#d93628"], ["稳妥", r.metrics.stable, "#087a55"], ["专业匹配", r.metrics.fit, "#2469bd"], ["家长血压", r.metrics.parent, "#d98200"]];
   metrics.forEach(([label, value, color], i) => {
-    const y = 920 + i * 46;
+    const y = 930 + i * 46;
     ctx.fillStyle = "#172033";
     ctx.font = "800 22px PingFang SC, Microsoft YaHei, sans-serif";
     ctx.fillText(label, 86, y);
@@ -799,6 +953,9 @@ function resetGame() {
   els.provinceSelect.value = "henan";
   els.trackSelect.value = "physics";
   els.ritualSelect.value = "steady";
+  els.familySelect.value = "ordinary";
+  els.personalitySelect.value = "steady";
+  els.talentSelect.value = "coding";
   els.scoreReport.classList.add("hidden");
   els.subjectGrid.innerHTML = "";
   els.applicationBody.innerHTML = "";
@@ -810,6 +967,9 @@ function resetGame() {
   els.copyBtn.disabled = true;
   els.copyTopBtn.disabled = true;
   els.downloadBtn.disabled = true;
+  els.ceremonyCard.classList.add("hidden");
+  els.resultCard.classList.remove("hidden");
+  els.lifeForecast.innerHTML = "";
   els.steps.forEach((step) => {
     step.disabled = step.dataset.step !== "score";
   });

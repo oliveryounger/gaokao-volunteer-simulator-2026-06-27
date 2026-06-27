@@ -55,6 +55,9 @@
             <div><dt>姓名</dt><dd id="candidateName">查分同学</dd></div>
             <div><dt>省份</dt><dd id="candidateProvince">待选择</dd></div>
             <div><dt>科类</dt><dd id="candidateTrack">待选择</dd></div>
+            <div><dt>家庭</dt><dd id="candidateFamily">待选择</dd></div>
+            <div><dt>性格</dt><dd id="candidatePersonality">待选择</dd></div>
+            <div><dt>特长</dt><dd id="candidateTalent">待选择</dd></div>
             <div><dt>总分</dt><dd id="candidateScore">--</dd></div>
             <div><dt>模拟位次</dt><dd id="candidateRank">--</dd></div>
           </dl>
@@ -117,6 +120,38 @@
                   <option value="koi">转发锦鲤，截图留念</option>
                   <option value="family">全家围观，客厅屏息</option>
                   <option value="f5">F5 连点，服务器求饶</option>
+                </select>
+              </label>
+              <label>
+                <span>家庭情况</span>
+                <select id="familySelect">
+                  <option value="ordinary">普通工薪家庭：稳一点就好</option>
+                  <option value="teacher">教师家庭：章程逐字审判</option>
+                  <option value="county">县城做题家家庭：位次就是家谱</option>
+                  <option value="business">小生意家庭：先问就业再问理想</option>
+                  <option value="free">散养式家庭：你开心就好但别太离谱</option>
+                </select>
+              </label>
+              <label>
+                <span>性格画像</span>
+                <select id="personalitySelect">
+                  <option value="steady">稳健型：人生不爱开盲盒</option>
+                  <option value="ambitious">上头型：梦校不冲等于没填</option>
+                  <option value="social">社牛型：开学三天认识半个学院</option>
+                  <option value="introvert">内耗型：每个按钮都要心理建设</option>
+                  <option value="creative">发散型：专业可以冷门，人生必须有梗</option>
+                </select>
+              </label>
+              <label>
+                <span>特长标签</span>
+                <select id="talentSelect">
+                  <option value="coding">信息竞赛/写代码</option>
+                  <option value="writing">作文常年被朗读</option>
+                  <option value="math">数学压轴题爱好者</option>
+                  <option value="debate">辩论队/嘴比笔快</option>
+                  <option value="art">审美在线/会做海报</option>
+                  <option value="sports">体育生心态/抗压强</option>
+                  <option value="none">暂无明显特长但很会熬夜</option>
                 </select>
               </label>
               <button class="primary-btn" type="submit">查询高考成绩</button>
@@ -220,12 +255,22 @@
         </section>
 
         <section id="resultPage" class="page">
-          <section class="result-card">
+          <section id="ceremonyCard" class="ceremony-card hidden">
+            <div>
+              <p class="section-label">录取查询仪式</p>
+              <h2 id="ceremonyTitle">等待系统投档</h2>
+              <p id="ceremonyCopy">提交志愿后，系统会一本正经地读取你的人生变量。</p>
+            </div>
+            <ol id="ceremonySteps"></ol>
+          </section>
+
+          <section id="resultCard" class="result-card">
             <div class="result-main">
               <p class="section-label">录取结果查询</p>
               <h2 id="resultTitle">等待投档</h2>
               <p id="resultSummary">提交志愿后生成结果。</p>
               <div id="resultStats" class="result-stats"></div>
+              <section id="lifeForecast" class="life-forecast"></section>
               <div class="result-actions">
                 <button id="backApplyBtn" type="button">返回修改志愿</button>
                 <button id="copyBtn" class="primary-btn" type="button" disabled>复制结果</button>
