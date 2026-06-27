@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>普通高校招生网上志愿填报系统 · 娱乐模拟版</title>
+  <meta name="description" content="真实高校名称 + 平行志愿规则的高考志愿填报娱乐模拟器。查分、填志愿、看录取结果。">
+  <meta property="og:title" content="高考志愿填报模拟器">
+  <meta property="og:description" content="真实学校，全真流程，娱乐参数。看看你会被哪所大学录取。">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="system-shell">
+    <header class="gov-header">
+      <div class="gov-emblem" aria-hidden="true">招</div>
+      <div>
+        <p>普通高校招生网上志愿填报系统</p>
+        <h1>娱乐模拟版</h1>
+      </div>
+      <div class="header-actions">
+        <button id="resetBtn" type="button">重新登录</button>
+        <button id="copyTopBtn" type="button" disabled>复制录取结果</button>
+      </div>
+    </header>
+
+    <section class="notice-bar">
+      <strong>系统公告</strong>
+      <span>本页面使用真实高校名称与教育部学校标识码，但投档线、位次、专业录取均为娱乐模拟参数，不构成真实志愿填报建议。</span>
+    </section>
+
+    <nav class="step-nav" aria-label="填报步骤">
+      <button class="step active" data-step="score" type="button">
+        <span>01</span>
+        <b>成绩查询</b>
+      </button>
+      <button class="step" data-step="apply" type="button" disabled>
+        <span>02</span>
+        <b>本科批志愿填报</b>
+      </button>
+      <button class="step" data-step="result" type="button" disabled>
+        <span>03</span>
+        <b>录取结果查询</b>
+      </button>
+    </nav>
+
+    <section class="layout">
+      <aside class="side-panel">
+        <section class="candidate-card">
+          <div class="panel-title">
+            <h2>考生信息</h2>
+            <span id="candidateStatus">未查询</span>
+          </div>
+          <dl>
+            <div><dt>考生号</dt><dd id="candidateNo">2642******</dd></div>
+            <div><dt>姓名</dt><dd id="candidateName">查分同学</dd></div>
+            <div><dt>省份</dt><dd id="candidateProvince">待选择</dd></div>
+            <div><dt>科类</dt><dd id="candidateTrack">待选择</dd></div>
+            <div><dt>总分</dt><dd id="candidateScore">--</dd></div>
+            <div><dt>模拟位次</dt><dd id="candidateRank">--</dd></div>
+          </dl>
+        </section>
+
+        <section class="metric-card">
+          <div class="panel-title">
+            <h2>志愿体检</h2>
+            <span id="metricStatus">未填报</span>
+          </div>
+          <div class="meter-row"><span>冲刺</span><i><b id="rushMeter"></b></i><em id="rushValue">0</em></div>
+          <div class="meter-row"><span>稳妥</span><i><b id="stableMeter"></b></i><em id="stableValue">0</em></div>
+          <div class="meter-row"><span>专业匹配</span><i><b id="fitMeter"></b></i><em id="fitValue">0</em></div>
+          <div class="meter-row"><span>家长血压</span><i><b id="parentMeter"></b></i><em id="parentValue">0</em></div>
+        </section>
+
+        <section class="meme-feed">
+          <div class="panel-title">
+            <h2>系统弹幕</h2>
+            <span id="feedCount">0 条</span>
+          </div>
+          <ol id="feedList"></ol>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <section id="scorePage" class="page active">
+          <section class="query-card">
+            <div class="query-copy">
+              <p class="section-label">成绩查询入口</p>
+              <h2>请核对考生信息后查询成绩</h2>
+              <p>模拟分数会按省份、科类和查分姿势生成，并换算为模拟位次。后续投档完全基于这个位次运行。</p>
+            </div>
+            <form id="scoreForm" class="query-form">
+              <label>
+                <span>考生昵称</span>
+                <input id="aliasInput" maxlength="12" value="查分同学" autocomplete="off">
+              </label>
+              <label>
+                <span>报考省份</span>
+                <select id="provinceSelect">
+                  <option value="henan">河南</option>
+                  <option value="guangdong">广东</option>
+                  <option value="jiangsu">江苏</option>
+                  <option value="sichuan">四川</option>
+                  <option value="beijing">北京</option>
+                </select>
+              </label>
+              <label>
+                <span>科类</span>
+                <select id="trackSelect">
+                  <option value="physics">物理类 / 理科向</option>
+                  <option value="history">历史类 / 文科向</option>
+                </select>
+              </label>
+              <label>
+                <span>查分姿势</span>
+                <select id="ritualSelect">
+                  <option value="steady">三秒倒计时，稳住手</option>
+                  <option value="koi">转发锦鲤，截图留念</option>
+                  <option value="family">全家围观，客厅屏息</option>
+                  <option value="f5">F5 连点，服务器求饶</option>
+                </select>
+              </label>
+              <button class="primary-btn" type="submit">查询高考成绩</button>
+            </form>
+          </section>
+
+          <section id="scoreReport" class="score-report hidden">
+            <div>
+              <p class="section-label">成绩单</p>
+              <h2 id="scoreHeadline">成绩待查询</h2>
+              <p id="scoreExplain">查询后可进入本科批志愿填报。</p>
+            </div>
+            <div class="score-big">
+              <span>总分</span>
+              <strong id="scoreTotal">--</strong>
+            </div>
+            <div id="subjectGrid" class="subject-grid"></div>
+            <button id="enterApplyBtn" class="primary-btn" type="button">进入志愿填报系统</button>
+          </section>
+        </section>
+
+        <section id="applyPage" class="page">
+          <section class="toolbar-card">
+            <div>
+              <p class="section-label">本科批 · 平行志愿</p>
+              <h2>志愿表</h2>
+              <p id="applyHint">按 A-F 顺序检索，投档成功后后续志愿不再检索。请设置冲稳保梯度并慎重选择是否服从调剂。</p>
+            </div>
+            <div class="toolbar-actions">
+              <button id="balancedBtn" type="button">智能冲稳保</button>
+              <button id="conservativeBtn" type="button">保守防滑档</button>
+              <button id="aggressiveBtn" type="button">全冲梦校</button>
+              <button id="clearBtn" type="button">清空志愿</button>
+            </div>
+          </section>
+
+          <section class="form-card">
+            <div class="table-scroll">
+              <table class="application-table">
+                <thead>
+                  <tr>
+                    <th>志愿</th>
+                    <th>院校代码</th>
+                    <th>院校名称</th>
+                    <th>所在地</th>
+                    <th>专业方向</th>
+                    <th>模拟风险</th>
+                    <th>服从调剂</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="applicationBody"></tbody>
+              </table>
+            </div>
+            <button id="submitBtn" class="primary-btn submit-btn" type="button" disabled>提交并模拟投档</button>
+          </section>
+
+          <section class="school-search">
+            <div class="school-search-head">
+              <div>
+                <p class="section-label">院校检索</p>
+                <h2>真实高校名单卡池</h2>
+                <p>学校名称与标识码来自教育部 2026 年全国普通高等学校名单；投档位次为游戏模拟参数。</p>
+              </div>
+              <div class="filters">
+                <input id="searchInput" placeholder="搜索学校 / 城市 / 类型">
+                <select id="riskFilter">
+                  <option value="all">全部风险</option>
+                  <option value="dream">梦</option>
+                  <option value="rush">冲</option>
+                  <option value="stable">稳</option>
+                  <option value="safe">保</option>
+                </select>
+                <select id="tierFilter">
+                  <option value="all">全部层次</option>
+                  <option value="985">985</option>
+                  <option value="211">211 / 双一流</option>
+                  <option value="public">普通本科</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-scroll school-list-wrap">
+              <table class="school-table">
+                <thead>
+                  <tr>
+                    <th>代码</th>
+                    <th>院校</th>
+                    <th>所在地</th>
+                    <th>主管部门</th>
+                    <th>层次</th>
+                    <th>模拟投档位次</th>
+                    <th>风险</th>
+                    <th>专业方向</th>
+                    <th>填报</th>
+                  </tr>
+                </thead>
+                <tbody id="schoolBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section id="resultPage" class="page">
+          <section class="result-card">
+            <div class="result-main">
+              <p class="section-label">录取结果查询</p>
+              <h2 id="resultTitle">等待投档</h2>
+              <p id="resultSummary">提交志愿后生成结果。</p>
+              <div id="resultStats" class="result-stats"></div>
+              <div class="result-actions">
+                <button id="backApplyBtn" type="button">返回修改志愿</button>
+                <button id="copyBtn" class="primary-btn" type="button" disabled>复制结果</button>
+                <button id="downloadBtn" type="button" disabled>下载结果图</button>
+              </div>
+            </div>
+            <canvas id="posterCanvas" width="900" height="1200" aria-label="录取结果图"></canvas>
+          </section>
+
+          <section class="process-card">
+            <div class="panel-title">
+              <h2>投档过程</h2>
+              <span id="processCount">0 条</span>
+            </div>
+            <ol id="processList"></ol>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <footer class="source-footer">
+      <span>高校名称来源：教育部《全国普通高等学校名单（截至2026年6月17日）》</span>
+      <span>规则参考：阳光高考网“平行志愿填报参考策略”</span>
+      <span>娱乐模拟：不代表任何省份真实分数线、招生计划或录取概率。</span>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
